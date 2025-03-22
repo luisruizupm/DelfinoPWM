@@ -67,6 +67,7 @@
 
 // Definición de variables globales
 #define BUFFER_SIZE 256  // Tamaño máximo del buffer
+#define SUPUTAMADRE 1
 
 char rxBuffer[BUFFER_SIZE];  // Buffer para almacenar la cadena recibida
 volatile uint16_t rxIndex = 0; // Índice del buffer

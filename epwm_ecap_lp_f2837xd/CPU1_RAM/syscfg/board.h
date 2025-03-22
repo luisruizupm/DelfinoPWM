@@ -128,6 +128,15 @@ extern "C"
 #define myADC0_CHANNEL_SOC0 ADC_CH_ADCIN0
 void myADC0_init();
 
+#define myADC1_BASE ADCB_BASE
+#define myADC1_RESULT_BASE ADCBRESULT_BASE
+#define myADC1_SOC0 ADC_SOC_NUMBER0
+#define myADC1_FORCE_SOC0 ADC_FORCE_SOC0
+#define myADC1_SAMPLE_WINDOW_SOC0 40
+#define myADC1_TRIGGER_SOURCE_SOC0 ADC_TRIGGER_EPWM2_SOCA
+#define myADC1_CHANNEL_SOC0 ADC_CH_ADCIN2
+void myADC1_init();
+
 
 //*****************************************************************************
 //
@@ -151,8 +160,8 @@ void myECAP0_init();
 #define myEPWM0_CMPB 0
 #define myEPWM0_CMPC 0
 #define myEPWM0_CMPD 0
-#define myEPWM0_DBRED 0
-#define myEPWM0_DBFED 0
+#define myEPWM0_DBRED 100
+#define myEPWM0_DBFED 80
 #define myEPWM0_TZA_ACTION EPWM_TZ_ACTION_HIGH_Z
 #define myEPWM0_TZB_ACTION EPWM_TZ_ACTION_HIGH_Z
 #define myEPWM0_INTERRUPT_SOURCE EPWM_INT_TBCTR_DISABLED

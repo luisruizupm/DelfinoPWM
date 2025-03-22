@@ -1,8 +1,6 @@
 # FIXED
 
 lab_main.obj: ../lab_main.c
-lab_main.obj: D:/Programas/CCS/Workspace_epwm_lab/epwm_ecap_lp_f2837xd/device/driverlib.h
-lab_main.obj: E:/ti/c2000/C2000Ware_5_04_00_00/driverlib/f2837xd/driverlib/inc/hw_memmap.h
 lab_main.obj: E:/ti/c2000/C2000Ware_5_04_00_00/driverlib/f2837xd/driverlib/adc.h
 lab_main.obj: E:/ti/CCS/ccs/tools/compiler/ti-cgt-c2000_22.6.1.LTS/include/stdbool.h
 lab_main.obj: E:/ti/CCS/ccs/tools/compiler/ti-cgt-c2000_22.6.1.LTS/include/_ti_config.h
@@ -17,9 +15,11 @@ lab_main.obj: E:/ti/CCS/ccs/tools/compiler/ti-cgt-c2000_22.6.1.LTS/include/machi
 lab_main.obj: E:/ti/CCS/ccs/tools/compiler/ti-cgt-c2000_22.6.1.LTS/include/sys/_stdint.h
 lab_main.obj: E:/ti/c2000/C2000Ware_5_04_00_00/driverlib/f2837xd/driverlib/inc/hw_adc.h
 lab_main.obj: E:/ti/c2000/C2000Ware_5_04_00_00/driverlib/f2837xd/driverlib/inc/hw_sysctl.h
+lab_main.obj: E:/ti/c2000/C2000Ware_5_04_00_00/driverlib/f2837xd/driverlib/inc/hw_memmap.h
 lab_main.obj: E:/ti/c2000/C2000Ware_5_04_00_00/driverlib/f2837xd/driverlib/inc/hw_types.h
 lab_main.obj: E:/ti/c2000/C2000Ware_5_04_00_00/driverlib/f2837xd/driverlib/cpu.h
 lab_main.obj: E:/ti/c2000/C2000Ware_5_04_00_00/driverlib/f2837xd/driverlib/debug.h
+lab_main.obj: D:/Programas/CCS/Workspace_epwm_lab/epwm_ecap_lp_f2837xd/device/driverlib.h
 lab_main.obj: E:/ti/c2000/C2000Ware_5_04_00_00/driverlib/f2837xd/driverlib/asysctl.h
 lab_main.obj: E:/ti/c2000/C2000Ware_5_04_00_00/driverlib/f2837xd/driverlib/inc/hw_asysctl.h
 lab_main.obj: E:/ti/c2000/C2000Ware_5_04_00_00/driverlib/f2837xd/driverlib/can.h
@@ -95,10 +95,6 @@ lab_main.obj: E:/ti/CCS/ccs/tools/compiler/ti-cgt-c2000_22.6.1.LTS/include/xloca
 
 ../lab_main.c:
 
-D:/Programas/CCS/Workspace_epwm_lab/epwm_ecap_lp_f2837xd/device/driverlib.h:
-
-E:/ti/c2000/C2000Ware_5_04_00_00/driverlib/f2837xd/driverlib/inc/hw_memmap.h:
-
 E:/ti/c2000/C2000Ware_5_04_00_00/driverlib/f2837xd/driverlib/adc.h:
 
 E:/ti/CCS/ccs/tools/compiler/ti-cgt-c2000_22.6.1.LTS/include/stdbool.h:
@@ -127,11 +123,15 @@ E:/ti/c2000/C2000Ware_5_04_00_00/driverlib/f2837xd/driverlib/inc/hw_adc.h:
 
 E:/ti/c2000/C2000Ware_5_04_00_00/driverlib/f2837xd/driverlib/inc/hw_sysctl.h:
 
+E:/ti/c2000/C2000Ware_5_04_00_00/driverlib/f2837xd/driverlib/inc/hw_memmap.h:
+
 E:/ti/c2000/C2000Ware_5_04_00_00/driverlib/f2837xd/driverlib/inc/hw_types.h:
 
 E:/ti/c2000/C2000Ware_5_04_00_00/driverlib/f2837xd/driverlib/cpu.h:
 
 E:/ti/c2000/C2000Ware_5_04_00_00/driverlib/f2837xd/driverlib/debug.h:
+
+D:/Programas/CCS/Workspace_epwm_lab/epwm_ecap_lp_f2837xd/device/driverlib.h:
 
 E:/ti/c2000/C2000Ware_5_04_00_00/driverlib/f2837xd/driverlib/asysctl.h:
 

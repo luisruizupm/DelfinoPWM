@@ -49,6 +49,7 @@
 //
 // Included Files
 //
+#include "adc.h"
 #include "driverlib.h"
 #include "device.h"
 #include "board.h"
@@ -60,7 +61,9 @@ uint32_t ePwm_MaxDuty;
 uint32_t ePwm_curDuty;
 
 uint16_t AdcBuf[50];            // Buffer to store ADC samples.
+uint16_t AdcBufB[50];           // Buffer to store B ADC samples
 uint16_t *AdcBufPtr = AdcBuf;   // Pointer to ADC buffer samples.
+uint16_t *AdcBufPtrB = AdcBufB;
 uint16_t LedCtr = 0;            // Counter to slow down LED toggle in ADC ISR.
 uint16_t DutyModOn = 1;         // Flag to turn on/off duty cycle modulation.
 uint16_t DutyModDir = 0;        // Flag to control duty mod direction up/down.
@@ -109,14 +112,20 @@ __interrupt void adcA1ISR(void)
     // Clear interrupt flags.
     Interrupt_clearACKGroup(INT_myADC0_1_INTERRUPT_ACK_GROUP);
     ADC_clearInterruptStatus(myADC0_BASE, ADC_INT_NUMBER1);
+
+    //Interrupt_clearACKGroup(INT_myADC1_1_INTERRUPT_ACK_GROUP);
+    ADC_clearInterruptStatus(myADC1_BASE, ADC_INT_NUMBER1);
     // Write contents of the ADC register to a circular buffer.
     *AdcBufPtr = ADC_readResult(myADC0_RESULT_BASE, myADC0_SOC0);
+    *AdcBufPtrB = ADC_readResult(myADC1_RESULT_BASE, myADC1_SOC0);
     if (AdcBufPtr == (AdcBuf + 49))
     {
         // Force buffer to wrap around.
         AdcBufPtr = AdcBuf;
+        AdcBufPtrB = AdcBufB;
     } else {
         AdcBufPtr += 1;
+        AdcBufPtrB += 1;
     }
     if (LedCtr >= 49999) {
         // Divide 50kHz sample rate by 50e3 to toggle LED at a rate of 1Hz.
@@ -177,8 +186,8 @@ void main(void)
 
     // Initialize variables for ePWM Duty Cycle
     ePwm_TimeBase = EPWM_getTimeBasePeriod(myEPWM0_BASE);
-    ePwm_MinDuty = (uint32_t)(0.95f * (float)ePwm_TimeBase);
-    ePwm_MaxDuty = (uint32_t)(0.05f * (float)ePwm_TimeBase);
+    ePwm_MinDuty = (uint32_t)(0.85f * (float)ePwm_TimeBase);
+    ePwm_MaxDuty = (uint32_t)(0.15f * (float)ePwm_TimeBase);
     ePwm_curDuty = EPWM_getCounterCompareValue(myEPWM0_BASE, EPWM_COUNTER_COMPARE_A);
 
     EINT;

@@ -118,6 +118,7 @@ void PinMux_init()
 //*****************************************************************************
 void ADC_init(){
 	myADC0_init();
+	myADC1_init();
 }
 
 void myADC0_init(){
@@ -175,6 +176,63 @@ void myADC0_init(){
 	ADC_clearInterruptStatus(myADC0_BASE, ADC_INT_NUMBER1);
 	ADC_enableContinuousMode(myADC0_BASE, ADC_INT_NUMBER1);
 	ADC_enableInterrupt(myADC0_BASE, ADC_INT_NUMBER1);
+}
+
+void myADC1_init(){
+	//
+	// Configures the analog-to-digital converter module prescaler.
+	//
+	ADC_setPrescaler(myADC1_BASE, ADC_CLK_DIV_4_0);
+	//
+	// Configures the analog-to-digital converter resolution and signal mode.
+	//
+	ADC_setMode(myADC1_BASE, ADC_RESOLUTION_12BIT, ADC_MODE_SINGLE_ENDED);
+	//
+	// Sets the timing of the end-of-conversion pulse
+	//
+	ADC_setInterruptPulseMode(myADC1_BASE, ADC_PULSE_END_OF_ACQ_WIN);
+	//
+	// Powers up the analog-to-digital converter core.
+	//
+	ADC_enableConverter(myADC1_BASE);
+	//
+	// Delay for 1ms to allow ADC time to power up
+	//
+	DEVICE_DELAY_US(500);
+	//
+	// SOC Configuration: Setup ADC EPWM channel and trigger settings
+	//
+	// Disables SOC burst mode.
+	//
+	ADC_disableBurstMode(myADC1_BASE);
+	//
+	// Sets the priority mode of the SOCs.
+	//
+	ADC_setSOCPriority(myADC1_BASE, ADC_PRI_ALL_ROUND_ROBIN);
+	//
+	// Start of Conversion 0 Configuration
+	//
+	//
+	// Configures a start-of-conversion (SOC) in the ADC and its interrupt SOC trigger.
+	// 	  	SOC number		: 0
+	//	  	Trigger			: ADC_TRIGGER_EPWM2_SOCA
+	//	  	Channel			: ADC_CH_ADCIN2
+	//	 	Sample Window	: 8 SYSCLK cycles
+	//		Interrupt Trigger: ADC_INT_SOC_TRIGGER_NONE
+	//
+	ADC_setupSOC(myADC1_BASE, ADC_SOC_NUMBER0, ADC_TRIGGER_EPWM2_SOCA, ADC_CH_ADCIN2, 8U);
+	ADC_setInterruptSOCTrigger(myADC1_BASE, ADC_SOC_NUMBER0, ADC_INT_SOC_TRIGGER_NONE);
+	//
+	// ADC Interrupt 1 Configuration
+	// 		Source	: ADC_SOC_NUMBER0
+	// 		Interrupt Source: enabled
+	//		Continuous Mode	: enabled
+	//
+	//
+	ADC_setInterruptSource(myADC1_BASE, ADC_INT_NUMBER1, ADC_SOC_NUMBER0);
+	ADC_clearInterruptStatus(myADC1_BASE, ADC_INT_NUMBER1);
+	ADC_enableContinuousMode(myADC1_BASE, ADC_INT_NUMBER1);
+	ADC_enableInterrupt(myADC1_BASE, ADC_INT_NUMBER1);
 }
 
 
@@ -306,10 +364,15 @@ void EPWM_init(){
     EPWM_setActionQualifierAction(myEPWM0_BASE, EPWM_AQ_OUTPUT_B, EPWM_AQ_OUTPUT_NO_CHANGE, EPWM_AQ_OUTPUT_ON_TIMEBASE_DOWN_CMPA);	
     EPWM_setActionQualifierAction(myEPWM0_BASE, EPWM_AQ_OUTPUT_B, EPWM_AQ_OUTPUT_NO_CHANGE, EPWM_AQ_OUTPUT_ON_TIMEBASE_UP_CMPB);	
     EPWM_setActionQualifierAction(myEPWM0_BASE, EPWM_AQ_OUTPUT_B, EPWM_AQ_OUTPUT_NO_CHANGE, EPWM_AQ_OUTPUT_ON_TIMEBASE_DOWN_CMPB);	
+    EPWM_setDeadBandDelayPolarity(myEPWM0_BASE, EPWM_DB_FED, EPWM_DB_POLARITY_ACTIVE_LOW);	
+    EPWM_setDeadBandDelayMode(myEPWM0_BASE, EPWM_DB_RED, true);	
     EPWM_setRisingEdgeDelayCountShadowLoadMode(myEPWM0_BASE, EPWM_RED_LOAD_ON_CNTR_ZERO);	
     EPWM_disableRisingEdgeDelayCountShadowLoadMode(myEPWM0_BASE);	
+    EPWM_setRisingEdgeDelayCount(myEPWM0_BASE, 100);	
+    EPWM_setDeadBandDelayMode(myEPWM0_BASE, EPWM_DB_FED, true);	
     EPWM_setFallingEdgeDelayCountShadowLoadMode(myEPWM0_BASE, EPWM_FED_LOAD_ON_CNTR_ZERO);	
     EPWM_disableFallingEdgeDelayCountShadowLoadMode(myEPWM0_BASE);	
+    EPWM_setFallingEdgeDelayCount(myEPWM0_BASE, 80);	
     EPWM_setClockPrescaler(myEPWM2_BASE, EPWM_CLOCK_DIVIDER_1, EPWM_HSCLOCK_DIVIDER_2);	
     EPWM_setTimeBasePeriod(myEPWM2_BASE, 1999);	
     EPWM_setTimeBaseCounter(myEPWM2_BASE, 0);	
@@ -339,6 +402,9 @@ void EPWM_init(){
     EPWM_enableADCTrigger(myEPWM2_BASE, EPWM_SOC_A);	
     EPWM_setADCTriggerSource(myEPWM2_BASE, EPWM_SOC_A, EPWM_SOC_TBCTR_PERIOD);	
     EPWM_setADCTriggerEventPrescale(myEPWM2_BASE, EPWM_SOC_A, 1);	
+    EPWM_enableADCTrigger(myEPWM2_BASE, EPWM_SOC_B);	
+    EPWM_setADCTriggerSource(myEPWM2_BASE, EPWM_SOC_B, EPWM_SOC_TBCTR_PERIOD);	
+    EPWM_setADCTriggerEventPrescale(myEPWM2_BASE, EPWM_SOC_B, 1);	
 }
 
 //*****************************************************************************
