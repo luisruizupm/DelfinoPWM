@@ -1,0 +1,52 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "CCS Debug",
+            "type": "ccs-debug",
+            "request": "launch"
+        },
+        {
+            "name": "epwm_ecap_lp_f2837xd",
+            "type": "ccs-debug",
+            "request": "launch",
+            "projectInfo": {
+                "name": "epwm_ecap_lp_f2837xd",
+                "resourceId": "/epwm_ecap_lp_f2837xd"
+            },
+            "launchSettings": {
+                "coresToLoadForProjectLaunch": [
+                    "C28xx_CPU1"
+                ]
+            }
+        },
+        {
+            "name": "ComFPGA",
+            "type": "ccs-debug",
+            "request": "launch",
+            "projectInfo": {
+                "name": "ComFPGA",
+                "resourceId": "/ComFPGA"
+            },
+            "launchSettings": {
+                "coresToLoadForProjectLaunch": [
+                    "C28xx_CPU1"
+                ]
+            }
+        },
+        {
+            "name": "sci_lp_f2837xd",
+            "type": "ccs-debug",
+            "request": "launch",
+            "projectInfo": {
+                "name": "sci_lp_f2837xd",
+                "resourceId": "/sci_lp_f2837xd"
+            },
+            "launchSettings": {
+                "coresToLoadForProjectLaunch": [
+                    "C28xx_CPU1"
+                ]
+            }
+        }
+    ]
+}

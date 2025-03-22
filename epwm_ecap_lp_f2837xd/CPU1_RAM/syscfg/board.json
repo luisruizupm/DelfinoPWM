@@ -1,0 +1,16 @@
+{
+    "interruptInfo" : [
+        {
+            "interruptName": "INT_myADC0_1",
+            "interruptHandler": "adcA1ISR"
+        },
+        {
+            "interruptName": "INT_myECAP0",
+            "interruptHandler": "ecap1ISR"
+        },
+        {
+            "interruptName": "INT_mySCIA_RX",
+            "interruptHandler": "INT_mySCIA_RX_ISR"
+        }
+    ]
+}
