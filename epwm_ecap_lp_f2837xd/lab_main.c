@@ -65,7 +65,7 @@ uint16_t AdcBufB[50];           // Buffer to store B ADC samples
 uint16_t *AdcBufPtr = AdcBuf;   // Pointer to ADC buffer samples.
 uint16_t *AdcBufPtrB = AdcBufB;
 uint16_t LedCtr = 0;            // Counter to slow down LED toggle in ADC ISR.
-uint16_t DutyModOn = 1;         // Flag to turn on/off duty cycle modulation.
+uint16_t DutyModOn = 0;         // Flag to turn on/off duty cycle modulation.
 uint16_t DutyModDir = 0;        // Flag to control duty mod direction up/down.
 uint16_t DutyModCtr = 0;        // Counter to slow down rate of modulation.
 int32_t eCapPwmDuty;            // Percent = (eCapPwmDuty/eCapPwmPeriod)*100.
@@ -173,6 +173,28 @@ __interrupt void ecap1ISR(void)
                     (int32_t)ECAP_getEventTimeStamp(myECAP0_BASE, ECAP_EVENT_1);
 }
 
+int extractFrequency(const char *str, int *frequency) {
+    const char *prefix = "PER:";
+    int i = 0;
+    for (i = 0; i < 4; ++i) {
+        if (str[i] != prefix[i]) {
+            return 0;
+        }
+    }
+
+    int num = 0;
+    for (i = 4; str[i] != '\0'; i++) {
+        if (str[i] >= '0' && str[i] <= '9') { // Verificar si es un dígito
+            num = num * 10 + (str[i] - '0');   // Convertir a entero
+        } else {
+            break; // Si encontramos un carácter no numérico, salimos
+        }
+    }
+    *frequency = num;
+    return  1;
+
+}
+
 //
 // Main
 //
@@ -202,13 +224,15 @@ void main(void)
     // Send starting message.
     //
     msg = "\r\n\n\nHello World! Enter a number 0-9 to change the LED blink rate, or led.\0";
-    SCI_writeCharArray(mySCIA_BASE, (uint16_t*)msg, 65);
+    SCI_writeCharArray(mySCIA_BASE, (uint16_t*)msg, 75);
 
     int ledstatus = 1;
     GPIO_writePin(DEVICE_GPIO_PIN_LED2, ledstatus);
 
     msg = "\r\nInput: \0";
-    SCI_writeCharArray(mySCIA_BASE, (uint16_t*)msg, 24);
+    SCI_writeCharArray(mySCIA_BASE, (uint16_t*)msg, 11);
+
+    int frequency;
 
 
     for (;;) {
@@ -222,10 +246,12 @@ void main(void)
         if (flagRxComplete) {
             flagRxComplete = 0;  // Resetear la flag
             msg = "\r\nReceived: ";
-            SCI_writeCharArray(mySCIA_BASE, (uint16_t*)msg, 12);
+            SCI_writeCharArray(mySCIA_BASE, (uint16_t*)msg, 13);
             
             SCI_writeCharArray(mySCIA_BASE, (uint16_t*)rxBuffer, strlen(rxBuffer));
-            if (strcmp(rxBuffer, "LED") == 0) {
+
+
+            if (strcmp(rxBuffer, "led") == 0) {
                 ledstatus = !ledstatus;
                 GPIO_writePin(DEVICE_GPIO_PIN_LED1, ledstatus);
 
@@ -234,13 +260,31 @@ void main(void)
                 } else {
                     msg = "\r\nblue LED OFF \0";
                 }
-                SCI_writeCharArray(mySCIA_BASE, (uint16_t*)msg, 25);
+                SCI_writeCharArray(mySCIA_BASE, (uint16_t*)msg, 17);
 
                 
             }
 
+            else if (extractFrequency(rxBuffer, &frequency)) {
+
+                EPWM_setTimeBasePeriod(myEPWM0_BASE, frequency);
+
+                ePwm_TimeBase = EPWM_getTimeBasePeriod(myEPWM0_BASE);
+                
+                EPWM_setCounterCompareValue(myEPWM0_BASE, EPWM_COUNTER_COMPARE_A, (ePwm_TimeBase + 1 ) / 2 - 1);	
+
+                ePwm_curDuty = EPWM_getCounterCompareValue(myEPWM0_BASE, EPWM_COUNTER_COMPARE_A);
+
+                EPWM_setRisingEdgeDelayCount(myEPWM0_BASE, 100);	
+
+                EPWM_setFallingEdgeDelayCount(myEPWM0_BASE, 80);	
+
+                
+
+            }
+
             msg = "\r\nInput: \0";
-            SCI_writeCharArray(mySCIA_BASE, (uint16_t*)msg, 24);
+            SCI_writeCharArray(mySCIA_BASE, (uint16_t*)msg, 11);
         }
     }
     

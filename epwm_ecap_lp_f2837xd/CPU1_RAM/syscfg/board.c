@@ -343,12 +343,12 @@ void myECAP0_init(){
 //*****************************************************************************
 void EPWM_init(){
     EPWM_setClockPrescaler(myEPWM0_BASE, EPWM_CLOCK_DIVIDER_1, EPWM_HSCLOCK_DIVIDER_2);	
-    EPWM_setTimeBasePeriod(myEPWM0_BASE, 25000);	
+    EPWM_setTimeBasePeriod(myEPWM0_BASE, 2500);	
     EPWM_setTimeBaseCounter(myEPWM0_BASE, 0);	
     EPWM_setTimeBaseCounterMode(myEPWM0_BASE, EPWM_COUNTER_MODE_UP_DOWN);	
     EPWM_disablePhaseShiftLoad(myEPWM0_BASE);	
     EPWM_setPhaseShift(myEPWM0_BASE, 0);	
-    EPWM_setCounterCompareValue(myEPWM0_BASE, EPWM_COUNTER_COMPARE_A, 18750);	
+    EPWM_setCounterCompareValue(myEPWM0_BASE, EPWM_COUNTER_COMPARE_A, 1875);	
     EPWM_setCounterCompareShadowLoadMode(myEPWM0_BASE, EPWM_COUNTER_COMPARE_A, EPWM_COMP_LOAD_ON_CNTR_ZERO);	
     EPWM_setCounterCompareValue(myEPWM0_BASE, EPWM_COUNTER_COMPARE_B, 0);	
     EPWM_setCounterCompareShadowLoadMode(myEPWM0_BASE, EPWM_COUNTER_COMPARE_B, EPWM_COMP_LOAD_ON_CNTR_ZERO);	
@@ -374,7 +374,7 @@ void EPWM_init(){
     EPWM_disableFallingEdgeDelayCountShadowLoadMode(myEPWM0_BASE);	
     EPWM_setFallingEdgeDelayCount(myEPWM0_BASE, 80);	
     EPWM_setClockPrescaler(myEPWM2_BASE, EPWM_CLOCK_DIVIDER_1, EPWM_HSCLOCK_DIVIDER_2);	
-    EPWM_setTimeBasePeriod(myEPWM2_BASE, 1999);	
+    EPWM_setTimeBasePeriod(myEPWM2_BASE, 199);	
     EPWM_setTimeBaseCounter(myEPWM2_BASE, 0);	
     EPWM_setTimeBaseCounterMode(myEPWM2_BASE, EPWM_COUNTER_MODE_UP);	
     EPWM_disablePhaseShiftLoad(myEPWM2_BASE);	
