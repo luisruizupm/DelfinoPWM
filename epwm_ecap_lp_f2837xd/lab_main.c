@@ -273,13 +273,7 @@ void main(void)
                 
                 EPWM_setCounterCompareValue(myEPWM0_BASE, EPWM_COUNTER_COMPARE_A, (ePwm_TimeBase + 1 ) / 2 - 1);	
 
-                ePwm_curDuty = EPWM_getCounterCompareValue(myEPWM0_BASE, EPWM_COUNTER_COMPARE_A);
-
-                EPWM_setRisingEdgeDelayCount(myEPWM0_BASE, 100);	
-
-                EPWM_setFallingEdgeDelayCount(myEPWM0_BASE, 80);	
-
-                
+                ePwm_curDuty = EPWM_getCounterCompareValue(myEPWM0_BASE, EPWM_COUNTER_COMPARE_A);                
 
             }
 

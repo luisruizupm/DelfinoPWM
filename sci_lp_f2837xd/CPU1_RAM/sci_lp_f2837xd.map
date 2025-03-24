@@ -1,7 +1,7 @@
 ******************************************************************************
              TMS320C2000 Linker PC v22.6.1                     
 ******************************************************************************
->> Linked Sat Mar 22 20:34:19 2025
+>> Linked Mon Mar 24 12:08:09 2025
 
 OUTPUT FILE NAME:   <sci_lp_f2837xd.out>
 ENTRY POINT SYMBOL: "code_start"  address: 00000000
@@ -13,7 +13,7 @@ MEMORY CONFIGURATION
 ----------------------  --------  ---------  --------  --------  ----  --------
 PAGE 0:
   BEGIN                 00000000   00000002  00000002  00000000  RWIX
-  RAMM0                 00000123   000002dd  00000046  00000297  RWIX
+  RAMM0                 00000123   000002dd  00000044  00000299  RWIX
   RAMLS0                00008000   00000800  000007ff  00000001  RWIX
   RAMLS1                00008800   00000800  00000321  000004df  RWIX
   RAMLS2                00009000   00000800  00000000  00000800  RWIX
@@ -39,7 +39,7 @@ PAGE 0:
 PAGE 1:
   BOOT_RSVD             00000002   00000121  00000000  00000121  RWIX
   RAMM1                 00000400   000003f8  00000100  000002f8  RWIX
-  RAMLS5                0000a800   00000800  00000611  000001ef  RWIX
+  RAMLS5                0000a800   00000800  000005f3  0000020d  RWIX
   RAMD1                 0000b800   00000800  00000000  00000800  RWIX
   RAMGS0                0000c000   00001000  00000000  00001000  RWIX
   RAMGS1                0000d000   00001000  00000000  00001000  RWIX
@@ -72,44 +72,43 @@ codestart
 *          0    00000000    00000002     
                   00000000    00000002     F2837xD_CodeStartBranch.obj (codestart)
 
-.cinit     0    00000128    00000042     
-                  00000128    0000002f     (.cinit..data.load) [load image, compression = lzss]
-                  00000157    00000001     --HOLE-- [fill = 0]
-                  00000158    00000006     (__TI_handler_table)
-                  0000015e    00000004     (.cinit..bss.load) [load image, compression = zero_init]
-                  00000162    00000008     (__TI_cinit_table)
+.cinit     0    00000128    00000040     
+                  00000128    0000002e     (.cinit..data.load) [load image, compression = lzss]
+                  00000156    00000006     (__TI_handler_table)
+                  0000015c    00000004     (.cinit..bss.load) [load image, compression = zero_init]
+                  00000160    00000008     (__TI_cinit_table)
 
 .reset     0    003fffc0    00000000     DSECT
 
 .stack     1    00000400    00000100     UNINITIALIZED
                   00000400    00000100     --HOLE--
 
-.bss       1    0000acdb    00000100     UNINITIALIZED
-                  0000acdb    00000100     lab_main.obj (.bss:rxBuffer)
+.bss       1    0000acbd    00000100     UNINITIALIZED
+                  0000acbd    00000100     lab_main.obj (.bss:rxBuffer)
 
 .init_array 
 *          0    00000123    00000000     UNINITIALIZED
 
-.const     1    0000a800    000004db     
-                  0000a800    0000019f     lab_main.obj (.const:.string)
-                  0000a99f    00000001     --HOLE-- [fill = 0]
-                  0000a9a0    000000c2     driverlib_eabi.lib : sysctl.obj (.const:.string)
-                  0000aa62    000000bc                        : gpio.obj (.const:.string)
-                  0000ab1e    000000bb                        : sci.obj (.const:.string)
-                  0000abd9    00000001     --HOLE-- [fill = 0]
-                  0000abda    0000008b     board.obj (.const:.string)
-                  0000ac65    00000001     --HOLE-- [fill = 0]
-                  0000ac66    00000062     driverlib_eabi.lib : cputimer.obj (.const:.string)
-                  0000acc8    00000013     device.obj (.const:.string)
+.const     1    0000a800    000004bd     
+                  0000a800    0000018d     lab_main.obj (.const:.string)
+                  0000a98d    00000001     --HOLE-- [fill = 0]
+                  0000a98e    000000c2     driverlib_eabi.lib : sysctl.obj (.const:.string)
+                  0000aa50    000000bc                        : gpio.obj (.const:.string)
+                  0000ab0c    000000bb                        : sci.obj (.const:.string)
+                  0000abc7    00000001     --HOLE-- [fill = 0]
+                  0000abc8    0000007f     board.obj (.const:.string)
+                  0000ac47    00000001     --HOLE-- [fill = 0]
+                  0000ac48    00000062     driverlib_eabi.lib : cputimer.obj (.const:.string)
+                  0000acaa    00000013     device.obj (.const:.string)
 
-.data      1    0000addc    00000036     UNINITIALIZED
-                  0000addc    00000022     lab_main.obj (.data:numbers)
-                  0000adfe    00000002     rts2800_fpu32_eabi.lib : _lock.c.obj (.data:_lock)
-                  0000ae00    00000006     device.obj (.data)
-                  0000ae06    00000006     rts2800_fpu32_eabi.lib : exit.c.obj (.data)
-                  0000ae0c    00000002                            : _lock.c.obj (.data:_unlock)
-                  0000ae0e    00000002     lab_main.obj (.data)
-                  0000ae10    00000002     rts2800_fpu32_eabi.lib : rand.c.obj (.data)
+.data      1    0000adbe    00000036     UNINITIALIZED
+                  0000adbe    00000022     lab_main.obj (.data:numbers)
+                  0000ade0    00000006     device.obj (.data)
+                  0000ade6    00000006     rts2800_fpu32_eabi.lib : exit.c.obj (.data)
+                  0000adec    00000002                            : _lock.c.obj (.data:_lock)
+                  0000adee    00000002                            : _lock.c.obj (.data:_unlock)
+                  0000adf0    00000002     lab_main.obj (.data)
+                  0000adf2    00000002     rts2800_fpu32_eabi.lib : rand.c.obj (.data)
 
 .TI.ramfunc 
 *          0    00000123    00000004     
@@ -201,9 +200,9 @@ MODULE SUMMARY
        Module                        code   ro data   rw data
        ------                        ----   -------   -------
     .\
-       lab_main.obj                  550    415       292    
+       lab_main.obj                  550    397       292    
     +--+-----------------------------+------+---------+---------+
-       Total:                        550    415       292    
+       Total:                        550    397       292    
                                                              
     .\device\
        device.obj                    1021   19        6      
@@ -212,11 +211,20 @@ MODULE SUMMARY
        Total:                        1031   19        6      
                                                              
     .\syscfg\
-       board.obj                     672    139       0      
+       board.obj                     672    127       0      
     +--+-----------------------------+------+---------+---------+
-       Total:                        672    139       0      
+       Total:                        672    127       0      
                                                              
-    E:\ti\CCS\ccs\tools\compiler\ti-cgt-c2000_22.6.1.LTS\lib\rts2800_fpu32_eabi.lib
+    C:\ti\C2000Ware_5_04_00_00\driverlib\f2837xd\driverlib\ccs\Debug\driverlib_eabi.lib
+       sysctl.obj                    1187   194       0      
+       sci.obj                       436    187       0      
+       gpio.obj                      310    188       0      
+       interrupt.obj                 214    0         0      
+       cputimer.obj                  42     98        0      
+    +--+-----------------------------+------+---------+---------+
+       Total:                        2189   667       0      
+                                                             
+    C:\ti\ccs2002\ccs\tools\compiler\ti-cgt-c2000_22.6.1.LTS\lib\rts2800_fpu32_eabi.lib
        fs_div28.asm.obj              136    0         0      
        copy_decompress_lzss.c.obj    48     0         0      
        exit.c.obj                    41     0         6      
@@ -236,31 +244,22 @@ MODULE SUMMARY
     +--+-----------------------------+------+---------+---------+
        Total:                        460    0         12     
                                                              
-    E:\ti\c2000\C2000Ware_5_04_00_00\driverlib\f2837xd\driverlib\ccs\Debug\driverlib_eabi.lib
-       sysctl.obj                    1187   194       0      
-       sci.obj                       436    187       0      
-       gpio.obj                      310    188       0      
-       interrupt.obj                 214    0         0      
-       cputimer.obj                  42     98        0      
-    +--+-----------------------------+------+---------+---------+
-       Total:                        2189   667       0      
-                                                             
        Stack:                        0      0         256    
-       Linker Generated:             0      65        0      
+       Linker Generated:             0      64        0      
     +--+-----------------------------+------+---------+---------+
-       Grand Total:                  4902   1305      566    
+       Grand Total:                  4902   1274      566    
 
 
 LINKER GENERATED COPY TABLES
 
-__TI_cinit_table @ 00000162 records: 2, size/record: 4, table size: 8
-	.data: load addr=00000128, load size=0000002f bytes, run addr=0000addc, run size=00000036 bytes, compression=lzss
-	.bss: load addr=0000015e, load size=00000004 bytes, run addr=0000acdb, run size=00000100 bytes, compression=zero_init
+__TI_cinit_table @ 00000160 records: 2, size/record: 4, table size: 8
+	.data: load addr=00000128, load size=0000002e bytes, run addr=0000adbe, run size=00000036 bytes, compression=lzss
+	.bss: load addr=0000015c, load size=00000004 bytes, run addr=0000acbd, run size=00000100 bytes, compression=zero_init
 
 
 LINKER GENERATED HANDLER TABLE
 
-__TI_handler_table @ 00000158 records: 3, size/record: 2, table size: 6
+__TI_handler_table @ 00000156 records: 3, size/record: 2, table size: 6
 	index: 0, handler: __TI_zero_init
 	index: 1, handler: __TI_decompress_lzss
 	index: 2, handler: __TI_decompress_none
@@ -272,20 +271,20 @@ address     data page           name
 --------    ----------------    ----
 00000400      10 (00000400)     __stack
 
-0000acdb     2b3 (0000acc0)     rxBuffer
+0000acbd     2b2 (0000ac80)     rxBuffer
 
-0000addc     2b7 (0000adc0)     numbers
-0000adfe     2b7 (0000adc0)     _lock
+0000adbe     2b6 (0000ad80)     numbers
 
-0000ae00     2b8 (0000ae00)     Example_Result
-0000ae02     2b8 (0000ae00)     Example_PassCount
-0000ae04     2b8 (0000ae00)     Example_Fail
-0000ae06     2b8 (0000ae00)     __TI_enable_exit_profile_output
-0000ae08     2b8 (0000ae00)     __TI_cleanup_ptr
-0000ae0a     2b8 (0000ae00)     __TI_dtors_ptr
-0000ae0c     2b8 (0000ae00)     _unlock
-0000ae0e     2b8 (0000ae00)     rxIndex
-0000ae0f     2b8 (0000ae00)     flagRxComplete
+0000ade0     2b7 (0000adc0)     Example_Result
+0000ade2     2b7 (0000adc0)     Example_PassCount
+0000ade4     2b7 (0000adc0)     Example_Fail
+0000ade6     2b7 (0000adc0)     __TI_enable_exit_profile_output
+0000ade8     2b7 (0000adc0)     __TI_cleanup_ptr
+0000adea     2b7 (0000adc0)     __TI_dtors_ptr
+0000adec     2b7 (0000adc0)     _lock
+0000adee     2b7 (0000adc0)     _unlock
+0000adf0     2b7 (0000adc0)     rxIndex
+0000adf1     2b7 (0000adc0)     flagRxComplete
 
 
 GLOBAL SYMBOLS: SORTED ALPHABETICALLY BY Name 
@@ -304,9 +303,9 @@ page  address   name
 0     0000b1fa  Device_enableUnbondedGPIOPullupsFor176Pin
 0     0000b0ae  Device_init                              
 0     0000b1d9  Device_initGPIO                          
-1     0000ae04  Example_Fail                             
-1     0000ae02  Example_PassCount                        
-1     0000ae00  Example_Result                           
+1     0000ade4  Example_Fail                             
+1     0000ade2  Example_PassCount                        
+1     0000ade0  Example_Result                           
 0     0000b3fc  Example_done                             
 0     0000b3f7  Example_setResultFail                    
 0     0000b3f2  Example_setResultPass                    
@@ -338,19 +337,19 @@ page  address   name
 0     00008508  SysCtl_selectOscSource                   
 0     0000b757  SysCtl_selectXTAL                        
 0     00008000  SysCtl_setClock                          
-0     00000162  __TI_CINIT_Base                          
-0     0000016a  __TI_CINIT_Limit                         
-0     0000016a  __TI_CINIT_Warm                          
-0     00000158  __TI_Handler_Table_Base                  
-0     0000015e  __TI_Handler_Table_Limit                 
+0     00000160  __TI_CINIT_Base                          
+0     00000168  __TI_CINIT_Limit                         
+0     00000168  __TI_CINIT_Warm                          
+0     00000156  __TI_Handler_Table_Base                  
+0     0000015c  __TI_Handler_Table_Limit                 
 1     00000500  __TI_STACK_END                           
 abs   00000100  __TI_STACK_SIZE                          
 0     000087d2  __TI_auto_init_nobinit_nopinit           
-1     0000ae08  __TI_cleanup_ptr                         
+1     0000ade8  __TI_cleanup_ptr                         
 0     000087a2  __TI_decompress_lzss                     
 0     00008b0a  __TI_decompress_none                     
-1     0000ae0a  __TI_dtors_ptr                           
-1     0000ae06  __TI_enable_exit_profile_output          
+1     0000adea  __TI_dtors_ptr                           
+1     0000ade6  __TI_enable_exit_profile_output          
 abs   ffffffff  __TI_pprof_out_hndl                      
 abs   ffffffff  __TI_prof_data_size                      
 abs   ffffffff  __TI_prof_data_start                     
@@ -363,27 +362,27 @@ n/a   UNDEFED   __c_args__
 1     00000400  __stack                                  
 0     00008abb  _args_main                               
 0     000089c7  _c_int00                                 
-1     0000adfe  _lock                                    
+1     0000adec  _lock                                    
 0     00008b01  _nop                                     
 0     00008afd  _register_lock                           
 0     00008af9  _register_unlock                         
 0     0000b7ff  _system_post_cinit                       
 0     000087fd  _system_pre_init                         
-1     0000ae0c  _unlock                                  
+1     0000adee  _unlock                                  
 0     0000882b  abort                                    
 0     00000000  code_start                               
 0     0000882d  exit                                     
-1     0000ae0f  flagRxComplete                           
+1     0000adf1  flagRxComplete                           
 0     00008305  main                                     
 0     000088fb  memcpy                                   
 0     0000b5f1  myBoardLED0_GPIO_init                    
 0     0000b5cc  myCPUTIMER0_init                         
 0     0000b666  mySCI1_init                              
 0     0000b623  mySCIA_init                              
-1     0000addc  numbers                                  
+1     0000adbe  numbers                                  
 0     00008810  rand                                     
-1     0000acdb  rxBuffer                                 
-1     0000ae0e  rxIndex                                  
+1     0000acbd  rxBuffer                                 
+1     0000adf0  rxIndex                                  
 0     00008800  srand                                    
 0     00008ae6  strcmp                                   
 0     00008b12  strlen                                   
@@ -395,11 +394,11 @@ page  address   name
 ----  -------   ----                                     
 0     00000000  code_start                               
 0     00000123  SysCtl_delay                             
-0     00000158  __TI_Handler_Table_Base                  
-0     0000015e  __TI_Handler_Table_Limit                 
-0     00000162  __TI_CINIT_Base                          
-0     0000016a  __TI_CINIT_Limit                         
-0     0000016a  __TI_CINIT_Warm                          
+0     00000156  __TI_Handler_Table_Base                  
+0     0000015c  __TI_Handler_Table_Limit                 
+0     00000160  __TI_CINIT_Base                          
+0     00000168  __TI_CINIT_Limit                         
+0     00000168  __TI_CINIT_Warm                          
 0     00008000  SysCtl_setClock                          
 0     00008305  main                                     
 0     00008375  __c28xabi_divf                           
@@ -471,18 +470,18 @@ page  address   name
 0     0000b7ff  _system_post_cinit                       
 1     00000400  __stack                                  
 1     00000500  __TI_STACK_END                           
-1     0000acdb  rxBuffer                                 
-1     0000addc  numbers                                  
-1     0000adfe  _lock                                    
-1     0000ae00  Example_Result                           
-1     0000ae02  Example_PassCount                        
-1     0000ae04  Example_Fail                             
-1     0000ae06  __TI_enable_exit_profile_output          
-1     0000ae08  __TI_cleanup_ptr                         
-1     0000ae0a  __TI_dtors_ptr                           
-1     0000ae0c  _unlock                                  
-1     0000ae0e  rxIndex                                  
-1     0000ae0f  flagRxComplete                           
+1     0000acbd  rxBuffer                                 
+1     0000adbe  numbers                                  
+1     0000ade0  Example_Result                           
+1     0000ade2  Example_PassCount                        
+1     0000ade4  Example_Fail                             
+1     0000ade6  __TI_enable_exit_profile_output          
+1     0000ade8  __TI_cleanup_ptr                         
+1     0000adea  __TI_dtors_ptr                           
+1     0000adec  _lock                                    
+1     0000adee  _unlock                                  
+1     0000adf0  rxIndex                                  
+1     0000adf1  flagRxComplete                           
 abs   00000100  __TI_STACK_SIZE                          
 abs   ffffffff  __TI_pprof_out_hndl                      
 abs   ffffffff  __TI_prof_data_size                      

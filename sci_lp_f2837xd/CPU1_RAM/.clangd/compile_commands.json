@@ -1,27 +1,27 @@
 [
    {
-      "directory" : "D:/Programas/CCS/Workspace_epwm_lab/sci_lp_f2837xd/CPU1_RAM",
-      "command"   : "clang++ -I\"D:/Programas/CCS/Workspace_epwm_lab/sci_lp_f2837xd\" -I\"D:/Programas/CCS/Workspace_epwm_lab/sci_lp_f2837xd/device\" -I\"E:/ti/c2000/C2000Ware_5_04_00_00/driverlib/f2837xd/driverlib\" -I\"E:/ti/CCS/ccs/tools/compiler/ti-cgt-c2000_22.6.1.LTS/include\" -DDEBUG -DCPU1 -D_LAUNCHXL_F28379D -I\"D:/Programas/CCS/Workspace_epwm_lab/sci_lp_f2837xd/CPU1_RAM/syscfg\" -DF2837xD=1",
-      "file"      : "D:/Programas/CCS/Workspace_epwm_lab/sci_lp_f2837xd/CPU1_RAM/syscfg/board.c"
+      "directory" : "C:/Users/Luis/Documents/Doctorado/Controladores/TI_delfino/PWM_openloop/sci_lp_f2837xd/CPU1_RAM",
+      "command"   : "clang++ -I\"C:/Users/Luis/Documents/Doctorado/Controladores/TI_delfino/PWM_openloop/sci_lp_f2837xd\" -I\"C:/Users/Luis/Documents/Doctorado/Controladores/TI_delfino/PWM_openloop/sci_lp_f2837xd/device\" -I\"C:/ti/C2000Ware_5_04_00_00/driverlib/f2837xd/driverlib\" -I\"C:/ti/ccs2002/ccs/tools/compiler/ti-cgt-c2000_22.6.1.LTS/include\" -DDEBUG -DCPU1 -D_LAUNCHXL_F28379D -I\"C:/Users/Luis/Documents/Doctorado/Controladores/TI_delfino/PWM_openloop/sci_lp_f2837xd/CPU1_RAM/syscfg\" -DF2837xD=1",
+      "file"      : "C:/Users/Luis/Documents/Doctorado/Controladores/TI_delfino/PWM_openloop/sci_lp_f2837xd/CPU1_RAM/syscfg/board.c"
    },
    {
-      "directory" : "D:/Programas/CCS/Workspace_epwm_lab/sci_lp_f2837xd/CPU1_RAM",
-      "command"   : "clang++ -I\"D:/Programas/CCS/Workspace_epwm_lab/sci_lp_f2837xd\" -I\"D:/Programas/CCS/Workspace_epwm_lab/sci_lp_f2837xd/device\" -I\"E:/ti/c2000/C2000Ware_5_04_00_00/driverlib/f2837xd/driverlib\" -I\"E:/ti/CCS/ccs/tools/compiler/ti-cgt-c2000_22.6.1.LTS/include\" -DDEBUG -DCPU1 -D_LAUNCHXL_F28379D -I\"D:/Programas/CCS/Workspace_epwm_lab/sci_lp_f2837xd/CPU1_RAM/syscfg\" -DF2837xD=1",
-      "file"      : "D:/Programas/CCS/Workspace_epwm_lab/sci_lp_f2837xd/CPU1_RAM/syscfg/c2000ware_libraries.c"
+      "directory" : "C:/Users/Luis/Documents/Doctorado/Controladores/TI_delfino/PWM_openloop/sci_lp_f2837xd/CPU1_RAM",
+      "command"   : "clang++ -I\"C:/Users/Luis/Documents/Doctorado/Controladores/TI_delfino/PWM_openloop/sci_lp_f2837xd\" -I\"C:/Users/Luis/Documents/Doctorado/Controladores/TI_delfino/PWM_openloop/sci_lp_f2837xd/device\" -I\"C:/ti/C2000Ware_5_04_00_00/driverlib/f2837xd/driverlib\" -I\"C:/ti/ccs2002/ccs/tools/compiler/ti-cgt-c2000_22.6.1.LTS/include\" -DDEBUG -DCPU1 -D_LAUNCHXL_F28379D -I\"C:/Users/Luis/Documents/Doctorado/Controladores/TI_delfino/PWM_openloop/sci_lp_f2837xd/CPU1_RAM/syscfg\" -DF2837xD=1",
+      "file"      : "C:/Users/Luis/Documents/Doctorado/Controladores/TI_delfino/PWM_openloop/sci_lp_f2837xd/CPU1_RAM/syscfg/c2000ware_libraries.c"
    },
    {
-      "directory" : "D:/Programas/CCS/Workspace_epwm_lab/sci_lp_f2837xd/CPU1_RAM",
-      "command"   : "clang++ -I\"D:/Programas/CCS/Workspace_epwm_lab/sci_lp_f2837xd\" -I\"D:/Programas/CCS/Workspace_epwm_lab/sci_lp_f2837xd/device\" -I\"E:/ti/c2000/C2000Ware_5_04_00_00/driverlib/f2837xd/driverlib\" -I\"E:/ti/CCS/ccs/tools/compiler/ti-cgt-c2000_22.6.1.LTS/include\" -DDEBUG -DCPU1 -D_LAUNCHXL_F28379D -I\"D:/Programas/CCS/Workspace_epwm_lab/sci_lp_f2837xd/CPU1_RAM/syscfg\" -DF2837xD=1",
-      "file"      : "D:/Programas/CCS/Workspace_epwm_lab/sci_lp_f2837xd/device/F2837xD_CodeStartBranch.asm"
+      "directory" : "C:/Users/Luis/Documents/Doctorado/Controladores/TI_delfino/PWM_openloop/sci_lp_f2837xd/CPU1_RAM",
+      "command"   : "clang++ -I\"C:/Users/Luis/Documents/Doctorado/Controladores/TI_delfino/PWM_openloop/sci_lp_f2837xd\" -I\"C:/Users/Luis/Documents/Doctorado/Controladores/TI_delfino/PWM_openloop/sci_lp_f2837xd/device\" -I\"C:/ti/C2000Ware_5_04_00_00/driverlib/f2837xd/driverlib\" -I\"C:/ti/ccs2002/ccs/tools/compiler/ti-cgt-c2000_22.6.1.LTS/include\" -DDEBUG -DCPU1 -D_LAUNCHXL_F28379D -I\"C:/Users/Luis/Documents/Doctorado/Controladores/TI_delfino/PWM_openloop/sci_lp_f2837xd/CPU1_RAM/syscfg\" -DF2837xD=1",
+      "file"      : "C:/Users/Luis/Documents/Doctorado/Controladores/TI_delfino/PWM_openloop/sci_lp_f2837xd/device/F2837xD_CodeStartBranch.asm"
    },
    {
-      "directory" : "D:/Programas/CCS/Workspace_epwm_lab/sci_lp_f2837xd/CPU1_RAM",
-      "command"   : "clang++ -I\"D:/Programas/CCS/Workspace_epwm_lab/sci_lp_f2837xd\" -I\"D:/Programas/CCS/Workspace_epwm_lab/sci_lp_f2837xd/device\" -I\"E:/ti/c2000/C2000Ware_5_04_00_00/driverlib/f2837xd/driverlib\" -I\"E:/ti/CCS/ccs/tools/compiler/ti-cgt-c2000_22.6.1.LTS/include\" -DDEBUG -DCPU1 -D_LAUNCHXL_F28379D -I\"D:/Programas/CCS/Workspace_epwm_lab/sci_lp_f2837xd/CPU1_RAM/syscfg\" -DF2837xD=1",
-      "file"      : "D:/Programas/CCS/Workspace_epwm_lab/sci_lp_f2837xd/device/device.c"
+      "directory" : "C:/Users/Luis/Documents/Doctorado/Controladores/TI_delfino/PWM_openloop/sci_lp_f2837xd/CPU1_RAM",
+      "command"   : "clang++ -I\"C:/Users/Luis/Documents/Doctorado/Controladores/TI_delfino/PWM_openloop/sci_lp_f2837xd\" -I\"C:/Users/Luis/Documents/Doctorado/Controladores/TI_delfino/PWM_openloop/sci_lp_f2837xd/device\" -I\"C:/ti/C2000Ware_5_04_00_00/driverlib/f2837xd/driverlib\" -I\"C:/ti/ccs2002/ccs/tools/compiler/ti-cgt-c2000_22.6.1.LTS/include\" -DDEBUG -DCPU1 -D_LAUNCHXL_F28379D -I\"C:/Users/Luis/Documents/Doctorado/Controladores/TI_delfino/PWM_openloop/sci_lp_f2837xd/CPU1_RAM/syscfg\" -DF2837xD=1",
+      "file"      : "C:/Users/Luis/Documents/Doctorado/Controladores/TI_delfino/PWM_openloop/sci_lp_f2837xd/device/device.c"
    },
    {
-      "directory" : "D:/Programas/CCS/Workspace_epwm_lab/sci_lp_f2837xd/CPU1_RAM",
-      "command"   : "clang++ -I\"D:/Programas/CCS/Workspace_epwm_lab/sci_lp_f2837xd\" -I\"D:/Programas/CCS/Workspace_epwm_lab/sci_lp_f2837xd/device\" -I\"E:/ti/c2000/C2000Ware_5_04_00_00/driverlib/f2837xd/driverlib\" -I\"E:/ti/CCS/ccs/tools/compiler/ti-cgt-c2000_22.6.1.LTS/include\" -DDEBUG -DCPU1 -D_LAUNCHXL_F28379D -I\"D:/Programas/CCS/Workspace_epwm_lab/sci_lp_f2837xd/CPU1_RAM/syscfg\" -DF2837xD=1",
-      "file"      : "D:/Programas/CCS/Workspace_epwm_lab/sci_lp_f2837xd/lab_main.c"
+      "directory" : "C:/Users/Luis/Documents/Doctorado/Controladores/TI_delfino/PWM_openloop/sci_lp_f2837xd/CPU1_RAM",
+      "command"   : "clang++ -I\"C:/Users/Luis/Documents/Doctorado/Controladores/TI_delfino/PWM_openloop/sci_lp_f2837xd\" -I\"C:/Users/Luis/Documents/Doctorado/Controladores/TI_delfino/PWM_openloop/sci_lp_f2837xd/device\" -I\"C:/ti/C2000Ware_5_04_00_00/driverlib/f2837xd/driverlib\" -I\"C:/ti/ccs2002/ccs/tools/compiler/ti-cgt-c2000_22.6.1.LTS/include\" -DDEBUG -DCPU1 -D_LAUNCHXL_F28379D -I\"C:/Users/Luis/Documents/Doctorado/Controladores/TI_delfino/PWM_openloop/sci_lp_f2837xd/CPU1_RAM/syscfg\" -DF2837xD=1",
+      "file"      : "C:/Users/Luis/Documents/Doctorado/Controladores/TI_delfino/PWM_openloop/sci_lp_f2837xd/lab_main.c"
    }
 ]

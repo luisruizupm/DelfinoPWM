@@ -47,6 +47,20 @@
                     "C28xx_CPU1"
                 ]
             }
+        },
+        {
+            "name": "PWM_delfino",
+            "type": "ccs-debug",
+            "request": "launch",
+            "projectInfo": {
+                "name": "PWM_delfino",
+                "resourceId": "/PWM_delfino"
+            },
+            "launchSettings": {
+                "coresToLoadForProjectLaunch": [
+                    "C28xx_CPU1"
+                ]
+            }
         }
     ]
 }

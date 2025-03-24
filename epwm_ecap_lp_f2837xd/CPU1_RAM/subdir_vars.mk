@@ -12,7 +12,7 @@ SYSCFG_SRCS += \
 ../lab_ePwm_eCap_launchpad.syscfg 
 
 LIB_SRCS += \
-E:/ti/c2000/C2000Ware_5_04_00_00/driverlib/f2837xd/driverlib/ccs/Debug/driverlib.lib 
+C:/ti/C2000Ware_5_04_00_00/driverlib/f2837xd/driverlib/ccs/Debug/driverlib.lib 
 
 C_SRCS += \
 ./syscfg/board.c \

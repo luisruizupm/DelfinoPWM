@@ -1,0 +1,158 @@
+/**
+ * These arguments were used when this file was generated. They will be automatically applied on subsequent loads
+ * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
+ * @cliArgs --board "/boards/LAUNCHXL_F28379D" --device "F2837xD" --part "F2837xD_337ZWT" --package "F2837xD_337ZWT" --context "CPU1" --product "C2000WARE@5.04.00.00"
+ * @v2CliArgs --board "/boards/LAUNCHXL_F28379D" --device "TMS320F28379D" --package "337ZWT" --context "CPU1" --product "C2000WARE@5.04.00.00"
+ * @versions {"tool":"1.22.0+3893"}
+ */
+
+/**
+ * Import the modules used in this configuration.
+ */
+const led              = scripting.addModule("/driverlib/board_components/led", {}, false);
+const led1             = led.addInstance();
+const led2             = led.addInstance();
+const ecap             = scripting.addModule("/driverlib/ecap.js", {}, false);
+const ecap1            = ecap.addInstance();
+const epwm             = scripting.addModule("/driverlib/epwm.js", {}, false);
+const epwm1            = epwm.addInstance();
+const epwm2            = epwm.addInstance();
+const epwm3            = epwm.addInstance();
+const epwm4            = epwm.addInstance();
+const inputxbar        = scripting.addModule("/driverlib/inputxbar.js", {}, false);
+const inputxbar1       = inputxbar.addInstance();
+const inputxbar_input  = scripting.addModule("/driverlib/inputxbar_input.js");
+const inputxbar_input1 = inputxbar_input.addInstance();
+const sci              = scripting.addModule("/driverlib/sci.js", {}, false);
+const sci1             = sci.addInstance();
+
+/**
+ * Write custom configuration values to the imported modules.
+ */
+led1.$name     = "myBoardLED0";
+led1.$hardware = system.deviceData.board.components.LED5;
+
+led2.$name     = "myBoardLED1";
+led2.$hardware = system.deviceData.board.components.LED4;
+
+ecap1.$name                    = "myECAP0";
+ecap1.eventStop                = "ECAP_EVENT_4";
+ecap1.eventTwoPolarity         = "ECAP_EVNT_FALLING_EDGE";
+ecap1.eventFourPolarity        = "ECAP_EVNT_FALLING_EDGE";
+ecap1.registerInterrupts       = true;
+ecap1.enableInterrupt          = true;
+ecap1.interruptSourceCapture   = ["ECAP_ISR_SOURCE_CAPTURE_EVENT_3"];
+ecap1.ecapInt.interruptHandler = "ecap1ISR";
+ecap1.ecapInt.enableInterrupt  = true;
+
+epwm1.$name                                                      = "myEPWM0";
+epwm1.epwmActionQualifier_EPWM_AQ_OUTPUT_A_shadowMode            = true;
+epwm1.epwmActionQualifier_EPWM_AQ_OUTPUT_A_ON_TIMEBASE_UP_CMPA   = "EPWM_AQ_OUTPUT_HIGH";
+epwm1.epwmActionQualifier_EPWM_AQ_OUTPUT_A_ON_TIMEBASE_DOWN_CMPA = "EPWM_AQ_OUTPUT_LOW";
+epwm1.epwmDeadband_polarityFED                                   = "EPWM_DB_POLARITY_ACTIVE_LOW";
+epwm1.epwmDeadband_enableRED                                     = true;
+epwm1.epwmDeadband_enableFED                                     = true;
+epwm1.epwmDeadband_redShadowMode                                 = true;
+epwm1.epwmDeadband_fedShadowMode                                 = true;
+epwm1.epwmCounterCompare_cmpA                                    = 999;
+epwm1.epwmDeadband_delayRED                                      = 5;
+epwm1.epwmDeadband_delayFED                                      = 5;
+epwm1.epwmTimebase_syncOutPulseMode                              = "EPWM_SYNC_OUT_PULSE_ON_COUNTER_ZERO";
+epwm1.epwmTimebase_counterMode                                   = "EPWM_COUNTER_MODE_UP";
+epwm1.epwmTimebase_period                                        = 1999;
+epwm1.epwmActionQualifier_EPWM_AQ_OUTPUT_A_ON_TIMEBASE_ZERO      = "EPWM_AQ_OUTPUT_LOW";
+epwm1.epwm.$assign                                               = "EPWM1";
+epwm1.epwm.epwm_aPin.$assign                                     = "boosterpack1.40";
+epwm1.epwm.epwm_bPin.$assign                                     = "boosterpack1.39";
+
+epwm2.$name                                                      = "myEPWM1";
+epwm2.epwmActionQualifier_EPWM_AQ_OUTPUT_A_shadowMode            = true;
+epwm2.epwmDeadband_polarityFED                                   = "EPWM_DB_POLARITY_ACTIVE_LOW";
+epwm2.epwmDeadband_enableRED                                     = true;
+epwm2.epwmDeadband_enableFED                                     = true;
+epwm2.epwmDeadband_redShadowMode                                 = true;
+epwm2.epwmDeadband_fedShadowMode                                 = true;
+epwm2.epwmCounterCompare_cmpA                                    = 999;
+epwm2.epwmDeadband_delayRED                                      = 5;
+epwm2.epwmDeadband_delayFED                                      = 5;
+epwm2.$hardware                                                  = system.deviceData.board.components.BP_SITE_1.subComponents.PWM_LOC2;
+epwm2.epwmActionQualifier_EPWM_AQ_OUTPUT_A_ON_TIMEBASE_UP_CMPA   = "EPWM_AQ_OUTPUT_LOW";
+epwm2.epwmActionQualifier_EPWM_AQ_OUTPUT_A_ON_TIMEBASE_DOWN_CMPA = "EPWM_AQ_OUTPUT_HIGH";
+epwm2.epwmTimebase_syncOutPulseMode                              = "EPWM_SYNC_OUT_PULSE_ON_EPWMxSYNCIN";
+epwm2.hrpwm_syncSource                                           = "HRPWM_PWMSYNC_SOURCE_ZERO";
+epwm2.epwmTimebase_phaseEnable                                   = true;
+epwm2.epwmTimebase_counterMode                                   = "EPWM_COUNTER_MODE_UP";
+epwm2.epwmTimebase_period                                        = 1999;
+epwm2.epwmActionQualifier_EPWM_AQ_OUTPUT_A_ON_TIMEBASE_ZERO      = "EPWM_AQ_OUTPUT_HIGH";
+
+epwm3.$name                                                      = "myEPWM2";
+epwm3.epwmActionQualifier_EPWM_AQ_OUTPUT_A_shadowMode            = true;
+epwm3.epwmActionQualifier_EPWM_AQ_OUTPUT_A_ON_TIMEBASE_UP_CMPA   = "EPWM_AQ_OUTPUT_HIGH";
+epwm3.epwmActionQualifier_EPWM_AQ_OUTPUT_A_ON_TIMEBASE_DOWN_CMPA = "EPWM_AQ_OUTPUT_LOW";
+epwm3.epwmDeadband_polarityFED                                   = "EPWM_DB_POLARITY_ACTIVE_LOW";
+epwm3.epwmDeadband_enableRED                                     = true;
+epwm3.epwmDeadband_enableFED                                     = true;
+epwm3.epwmDeadband_redShadowMode                                 = true;
+epwm3.epwmDeadband_fedShadowMode                                 = true;
+epwm3.epwmCounterCompare_cmpA                                    = 999;
+epwm3.epwmDeadband_delayRED                                      = 5;
+epwm3.epwmDeadband_delayFED                                      = 5;
+epwm3.epwmTimebase_counterMode                                   = "EPWM_COUNTER_MODE_UP";
+epwm3.epwmTimebase_period                                        = 1999;
+epwm3.epwmActionQualifier_EPWM_AQ_OUTPUT_A_ON_TIMEBASE_ZERO      = "EPWM_AQ_OUTPUT_LOW";
+epwm3.$hardware                                                  = system.deviceData.board.components.BP_SITE_2.subComponents.PWM_LOC1;
+epwm3.epwmTimebase_phaseEnable                                   = true;
+epwm3.epwmTimebase_syncOutPulseMode                              = "EPWM_SYNC_OUT_PULSE_ON_EPWMxSYNCIN";
+
+epwm4.$name                                                      = "myEPWM3";
+epwm4.epwmActionQualifier_EPWM_AQ_OUTPUT_A_shadowMode            = true;
+epwm4.epwmActionQualifier_EPWM_AQ_OUTPUT_A_ON_TIMEBASE_DOWN_CMPA = "EPWM_AQ_OUTPUT_LOW";
+epwm4.epwmDeadband_polarityFED                                   = "EPWM_DB_POLARITY_ACTIVE_LOW";
+epwm4.epwmDeadband_enableRED                                     = true;
+epwm4.epwmDeadband_enableFED                                     = true;
+epwm4.epwmDeadband_redShadowMode                                 = true;
+epwm4.epwmDeadband_fedShadowMode                                 = true;
+epwm4.epwmCounterCompare_cmpA                                    = 999;
+epwm4.epwmDeadband_delayRED                                      = 5;
+epwm4.epwmDeadband_delayFED                                      = 5;
+epwm4.epwmTimebase_counterMode                                   = "EPWM_COUNTER_MODE_UP";
+epwm4.epwmTimebase_period                                        = 1999;
+epwm4.epwmTimebase_phaseEnable                                   = true;
+epwm4.epwmTimebase_syncOutPulseMode                              = "EPWM_SYNC_OUT_PULSE_ON_EPWMxSYNCIN";
+epwm4.$hardware                                                  = system.deviceData.board.components.BP_SITE_2.subComponents.PWM_LOC2;
+epwm4.epwmActionQualifier_EPWM_AQ_OUTPUT_A_ON_TIMEBASE_UP_CMPA   = "EPWM_AQ_OUTPUT_LOW";
+epwm4.epwmActionQualifier_EPWM_AQ_OUTPUT_A_ON_TIMEBASE_ZERO      = "EPWM_AQ_OUTPUT_HIGH";
+
+inputxbar1.$name = "myINPUTXBAR0";
+
+inputxbar_input1.$name          = "myINPUTXBARINPUT0";
+inputxbar_input1.inputxbarInput = "XBAR_INPUT7";
+
+sci1.$name                      = "mySCIA";
+sci1.selectRegisteredInterrupts = ["registerRxInt"];
+sci1.baudRates                  = 9600;
+sci1.rxFifo                     = "SCI_FIFO_RX1";
+sci1.enabledFIFOInterrupts      = ["SCI_INT_RXFF"];
+sci1.sci.scirxdPin.$assign      = "GPIO43";
+sci1.sci.scitxdPin.$assign      = "GPIO42";
+sci1.rxQual.$name               = "myGPIOQUAL0";
+sci1.txQual.$name               = "myGPIOQUAL1";
+sci1.sciRXInt.enableInterrupt   = true;
+
+/**
+ * Pinmux solution for unlocked pins/peripherals. This ensures that minor changes to the automatic solver in a future
+ * version of the tool will not impact the pinmux you originally saw.  These lines can be completely deleted in order to
+ * re-solve from scratch.
+ */
+led1.gpio.gpioPin.$suggestSolution    = "GPIO34";
+led2.gpio.gpioPin.$suggestSolution    = "GPIO31";
+epwm2.epwm.$suggestSolution           = "EPWM2";
+epwm2.epwm.epwm_aPin.$suggestSolution = "boosterpack1.38";
+epwm2.epwm.epwm_bPin.$suggestSolution = "boosterpack1.37";
+epwm3.epwm.$suggestSolution           = "EPWM4";
+epwm3.epwm.epwm_aPin.$suggestSolution = "boosterpack2.80";
+epwm3.epwm.epwm_bPin.$suggestSolution = "boosterpack2.79";
+epwm4.epwm.$suggestSolution           = "EPWM5";
+epwm4.epwm.epwm_aPin.$suggestSolution = "boosterpack2.78";
+epwm4.epwm.epwm_bPin.$suggestSolution = "boosterpack2.77";
+sci1.sci.$suggestSolution             = "SCIA";

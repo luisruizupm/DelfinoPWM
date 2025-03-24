@@ -153,15 +153,15 @@ void myECAP0_init();
 //
 //*****************************************************************************
 #define myEPWM0_BASE EPWM1_BASE
-#define myEPWM0_TBPRD 2500
+#define myEPWM0_TBPRD 2000
 #define myEPWM0_COUNTER_MODE EPWM_COUNTER_MODE_UP_DOWN
 #define myEPWM0_TBPHS 0
-#define myEPWM0_CMPA 1875
+#define myEPWM0_CMPA 999
 #define myEPWM0_CMPB 0
 #define myEPWM0_CMPC 0
 #define myEPWM0_CMPD 0
-#define myEPWM0_DBRED 100
-#define myEPWM0_DBFED 80
+#define myEPWM0_DBRED 5
+#define myEPWM0_DBFED 5
 #define myEPWM0_TZA_ACTION EPWM_TZ_ACTION_HIGH_Z
 #define myEPWM0_TZB_ACTION EPWM_TZ_ACTION_HIGH_Z
 #define myEPWM0_INTERRUPT_SOURCE EPWM_INT_TBCTR_DISABLED
