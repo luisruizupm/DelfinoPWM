@@ -53,6 +53,7 @@
 #include "driverlib.h"
 #include "device.h"
 #include "board.h"
+//#include <cstdint>
 #include <stdint.h> 
 #include <string.h>
 
@@ -165,15 +166,14 @@ int extractDelay(const char *str, int *delay) {
     return 1;
 }
 
-int extractDead(const char *str, int *dead) {
-    const char *prefix = "DEA:";
+int extractDeadp1(const char *str, int *dead) {
+    const char *prefix = "DP1:";
     int i = 0;
     for (i = 0; i < 4; ++i) {
         if (str[i] != prefix[i]) {
             return 0;
         }
     }
-
     int num = 0;
     for (i = 4; str[i] != '\0'; i++) {
         if (str[i] >= '0' && str[i] <= '9') { // Verificar si es un dígito
@@ -184,7 +184,66 @@ int extractDead(const char *str, int *dead) {
     }
     *dead = num;
     return  1;
+}
 
+int extractDeadp2(const char *str, int *dead) {
+    const char *prefix = "DP2:";
+    int i = 0;
+    for (i = 0; i < 4; ++i) {
+        if (str[i] != prefix[i]) {
+            return 0;
+        }
+    }
+    int num = 0;
+    for (i = 4; str[i] != '\0'; i++) {
+        if (str[i] >= '0' && str[i] <= '9') { // Verificar si es un dígito
+            num = num * 10 + (str[i] - '0');   // Convertir a entero
+        } else {
+            break; // Si encontramos un carácter no numérico, salimos
+        }
+    }
+    *dead = num;
+    return  1;
+}
+
+int extractDeads1(const char *str, int *dead) {
+    const char *prefix = "DS1:";
+    int i = 0;
+    for (i = 0; i < 4; ++i) {
+        if (str[i] != prefix[i]) {
+            return 0;
+        }
+    }
+    int num = 0;
+    for (i = 4; str[i] != '\0'; i++) {
+        if (str[i] >= '0' && str[i] <= '9') { // Verificar si es un dígito
+            num = num * 10 + (str[i] - '0');   // Convertir a entero
+        } else {
+            break; // Si encontramos un carácter no numérico, salimos
+        }
+    }
+    *dead = num;
+    return  1;
+}
+
+int extractDeads2(const char *str, int *dead) {
+    const char *prefix = "DS2:";
+    int i = 0;
+    for (i = 0; i < 4; ++i) {
+        if (str[i] != prefix[i]) {
+            return 0;
+        }
+    }
+    int num = 0;
+    for (i = 4; str[i] != '\0'; i++) {
+        if (str[i] >= '0' && str[i] <= '9') { // Verificar si es un dígito
+            num = num * 10 + (str[i] - '0');   // Convertir a entero
+        } else {
+            break; // Si encontramos un carácter no numérico, salimos
+        }
+    }
+    *dead = num;
+    return  1;
 }
 
 int extractSync(const char *str, int *sync) {
@@ -222,12 +281,13 @@ void main(void)
 
     // Initialize variables for ePWM Duty Cycle
     ePwm_TimeBase = EPWM_getTimeBasePeriod(myEPWM0_BASE);
+    int ePwm_TimeBase_init = EPWM_getTimeBasePeriod(myEPWM0_BASE);
     ePwm_MinDuty = (uint32_t)(0.85f * (float)ePwm_TimeBase);
     ePwm_MaxDuty = (uint32_t)(0.15f * (float)ePwm_TimeBase);
     ePwm_curDuty = EPWM_getCounterCompareValue(myEPWM0_BASE, EPWM_COUNTER_COMPARE_A);
 
-    EPWM_setPhaseShift(myEPWM2_BASE, - 499);
-    EPWM_setPhaseShift(myEPWM3_BASE, - 499);
+    EPWM_setPhaseShift(myEPWM2_BASE, 499);
+    EPWM_setPhaseShift(myEPWM3_BASE, 499);
 
 
 
@@ -252,9 +312,9 @@ void main(void)
     SCI_writeCharArray(mySCIA_BASE, (uint16_t*)msg, 11);
 
     int frequency;
-    int delay;
-    int dead;
-    int sync_rect;
+    int delay = 0;
+    int dead = 100;
+    int sync_rect = 499;
 
 
     for (;;) {
@@ -297,25 +357,60 @@ void main(void)
                 EPWM_setCounterCompareValue(myEPWM0_BASE, EPWM_COUNTER_COMPARE_A, (ePwm_TimeBase + 1 ) / 2 - 1);	
                 EPWM_setCounterCompareValue(myEPWM1_BASE, EPWM_COUNTER_COMPARE_A, (ePwm_TimeBase + 1 ) / 2 - 1);	
 
-                ePwm_curDuty = EPWM_getCounterCompareValue(myEPWM0_BASE, EPWM_COUNTER_COMPARE_A);                
+                ePwm_curDuty = EPWM_getCounterCompareValue(myEPWM0_BASE, EPWM_COUNTER_COMPARE_A);   
+
+                EPWM_setTimeBasePeriod(myEPWM2_BASE, frequency);
+                EPWM_setTimeBasePeriod(myEPWM3_BASE, frequency);
+                
+                EPWM_setCounterCompareValue(myEPWM2_BASE, EPWM_COUNTER_COMPARE_A, (ePwm_TimeBase + 1 ) / 2 - 1);	
+                EPWM_setCounterCompareValue(myEPWM3_BASE, EPWM_COUNTER_COMPARE_A, (ePwm_TimeBase + 1 ) / 2 - 1); 
+
+
+                uint32_t numerador = (uint32_t)delay * ePwm_TimeBase_init * 2;  // Evita overflow
+                uint32_t denominador = ePwm_TimeBase;                   // Divisor en un solo paso
+                uint16_t phaseshift = (uint16_t)(numerador / denominador);  // División segura
+                EPWM_setPhaseShift(myEPWM1_BASE, - phaseshift);   
+
+                uint32_t numerador1 = (uint32_t)(sync_rect + 1) * (ePwm_TimeBase_init + 1);
+                uint32_t denominador1 = (ePwm_TimeBase + 1);
+                uint16_t sync_delay = (uint16_t)(numerador1 / denominador1) - 1;
+
+                EPWM_setPhaseShift(myEPWM2_BASE, - sync_delay);
+                EPWM_setPhaseShift(myEPWM3_BASE, - sync_delay);        
 
             }
 
             else if (extractDelay(rxBuffer, &delay)){
-                EPWM_setPhaseShift(myEPWM1_BASE, - delay);
+                EPWM_setPhaseShift(myEPWM1_BASE, (- delay));
             }
 
-            else if (extractDead(rxBuffer, &dead)) {
+            else if (extractDeadp1(rxBuffer, &dead)) {
                 EPWM_setRisingEdgeDelayCount(myEPWM0_BASE, (uint16_t) dead);	
-                EPWM_setFallingEdgeDelayCount(myEPWM0_BASE, (uint16_t) dead);	
 
                 EPWM_setRisingEdgeDelayCount(myEPWM1_BASE, (uint16_t) dead);	
+            }
+
+            else if (extractDeadp2(rxBuffer, &dead)) {	
+                EPWM_setFallingEdgeDelayCount(myEPWM0_BASE, (uint16_t) dead);	
+
                 EPWM_setFallingEdgeDelayCount(myEPWM1_BASE, (uint16_t) dead);	
             }
 
+            else if (extractDeads1(rxBuffer, &dead)) {
+                EPWM_setRisingEdgeDelayCount(myEPWM2_BASE, (uint16_t) dead);	
+
+                EPWM_setRisingEdgeDelayCount(myEPWM3_BASE, (uint16_t) dead);	
+            }
+
+            else if (extractDeads2(rxBuffer, &dead)) {	
+                EPWM_setFallingEdgeDelayCount(myEPWM2_BASE, (uint16_t) dead);	
+
+                EPWM_setFallingEdgeDelayCount(myEPWM3_BASE, (uint16_t) dead);	
+            }
+
             else if (extractSync(rxBuffer, &sync_rect)) {
-                EPWM_setPhaseShift(myEPWM2_BASE, - sync_rect);
-                EPWM_setPhaseShift(myEPWM3_BASE, - sync_rect);
+                EPWM_setPhaseShift(myEPWM2_BASE, - (sync_rect * ePwm_TimeBase_init / ePwm_TimeBase));
+                EPWM_setPhaseShift(myEPWM3_BASE, - (sync_rect * ePwm_TimeBase_init / ePwm_TimeBase));
             
             }
 

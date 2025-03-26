@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 import serial
 import serial.tools.list_ports
+import time
 
 class SerialConnectionApp(tk.Toplevel):
     def __init__(self, root):
@@ -148,21 +149,55 @@ class MainApp(tk.Tk):
             dead_time1 = int(self.p_dead_time1_var.get())
             dead_time2 = int(self.p_dead_time2_var.get())
 
+            PS = max(0, round(180 * 25 / 9 * (1 - duty_cycle / 50) - 1))
+
             dead_time1 = round(max(dead_time1, 20) / 20)
             dead_time2 = round(max(dead_time2, 20) / 20)
 
-            #self.serial_connection.write(f"PDC:{duty_cycle:02d}\n".encode())
-            self.serial_connection.write(f"DEA:{dead_time1:02d}\n".encode())
-            print(f"Command sent: DEA:{dead_time1:02d}")
+            self.serial_connection.write(f"PS:{PS:03d}\n".encode())
+            print(f"Command sent: PS:{PS:03d}")
+            time.sleep(0.1)
+            self.serial_connection.write(f"DP1:{dead_time1:02d}\n".encode())
+            print(f"Command sent: DP1:{dead_time1:02d}")
+            time.sleep(0.1)
+            self.serial_connection.write(f"DP2:{dead_time2:02d}\n".encode())
         except ValueError:
             messagebox.showerror("Error", "Please enter a valid number")
         except Exception as e:
             messagebox.showerror("Error", f"Failed to update primary bridge: {str(e)}")
 
+    def secondary_bridge_update(self):
+        """Actualizar los parámetros del puente secundario"""
+        try:
+            if not self.serial_connection or not self.serial_connection.is_open:
+                messagebox.showerror("Error", "Serial connection is not open")
+                return
+
+            phase_shift = int(self.s_phase_shift_var.get())
+            dead_time1 = int(self.s_dead_time1_var.get())
+            dead_time2 = int(self.s_dead_time2_var.get())
+
+            phase_shift = max(0, round(180 * 25 / 9 * (1 - phase_shift / 90) - 1))
+
+            dead_time1 = round(max(dead_time1, 20) / 20)
+            dead_time2 = round(max(dead_time2, 20) / 20)
+
+            self.serial_connection.write(f"PS:{phase_shift:03d}\n".encode())
+            print(f"Command sent: PS:{phase_shift:03d}")
+            time.sleep(0.1)
+            self.serial_connection.write(f"DS1:{dead_time1:02d}\n".encode())
+            print(f"Command sent: DS1:{dead_time1:02d}")
+            time.sleep(0.1)
+            self.serial_connection.write(f"DS2:{dead_time2:02d}\n".encode())
+        except ValueError:
+            messagebox.showerror("Error", "Please enter a valid number")
+        except Exception as e:
+            messagebox.showerror("Error", f"Failed to update secondary bridge: {str(e)}")
+
     def create_controls(self, parent):
         title_frame = tk.Frame(parent, bg="#1E1E1E", pady=10)
         title_frame.pack(fill="x")
-        tk.Label(title_frame, text="Main Application", bg="#1E1E1E", fg="white", font=("Arial", 16, "bold")).pack()
+        tk.Label(title_frame, text="TI F28379D Serial Interface", bg="#1E1E1E", fg="white", font=("Arial", 16, "bold")).pack()
 
         # Estado de conexión
         self.connection_status = tk.Label(parent, text="Disconnected", fg="red", bg="#1E1E1E", font=("Arial", 10))
