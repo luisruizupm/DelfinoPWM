@@ -119,20 +119,31 @@ class MainApp(tk.Tk):
         self.destroy()
 
     def set_frequency(self):
-        """Establecer la frecuencia a través de la conexión serial"""
+        """Establecer la frecuencia a través de la conexión serial en pasos de 5 Hz"""
         try:
             if not self.serial_connection or not self.serial_connection.is_open:
                 messagebox.showerror("Error", "Serial connection is not open")
                 return
 
-            f = float(self.frequency_var.get())
-            if not (1 <= f <= 200):  # Validar rango
+            if not hasattr(self, "current_frequency"):
+                self.current_frequency = 25  # Inicializar la frecuencia actual a 25 Hz
+
+            target_frequency = float(self.frequency_var.get())
+            if not (1 <= target_frequency <= 200):  # Validar rango
                 messagebox.showerror("Error", "Frequency must be between 1-200 Hz")
                 return
 
-            T = round(1 / f * 5e4 - 1)
-            self.serial_connection.write(f"PER:{T:04d}\n".encode())
-                        
+            step = 5 if target_frequency > self.current_frequency else -5
+
+            while (step > 0 and self.current_frequency < target_frequency) or (step < 0 and self.current_frequency > target_frequency):
+                self.current_frequency += step
+                if (step > 0 and self.current_frequency > target_frequency) or (step < 0 and self.current_frequency < target_frequency):
+                    self.current_frequency = target_frequency  # Ajustar el valor final
+
+                T = round(1 / self.current_frequency * 5e4 - 1)
+                self.serial_connection.write(f"PER:{T:04d}\n".encode())
+                time.sleep(0.1)  # Pequeña pausa para simular la transición gradual
+
         except ValueError:
             messagebox.showerror("Error", "Please enter a valid number")
         except Exception as e:

@@ -77,6 +77,7 @@ int32_t eCapPwmPeriod;          // Frequency = DEVICE_SYSCLK_FREQ/eCapPwmPeriod.
 
 // Definición de variables globales
 #define BUFFER_SIZE 256  // Tamaño máximo del buffer
+#define DELAY_CNT 5
 
 char rxBuffer[BUFFER_SIZE];  // Buffer para almacenar la cadena recibida
 volatile uint16_t rxIndex = 0; // Índice del buffer
@@ -86,6 +87,7 @@ volatile uint8_t flagRxComplete = 0; // Flag para indicar que se recibió un men
 #pragma CODE_SECTION(INT_mySCIA_RX_ISR, ".TI.ramfunc")
 #pragma CODE_SECTION(ecap1ISR, ".TI.ramfunc")
 #pragma CODE_SECTION(EPWM_setTimeBasePeriod, ".TI.ramfunc")
+#pragma CODE_SECTION(EPWM_setCounterCompareValue, ".TI.ramfunc")
 #pragma CODE_SECTION(EPWM_setPhaseShift, ".TI.ramfunc")
 #pragma CODE_SECTION(extractFrequency, ".TI.ramfunc")
 #pragma CODE_SECTION(extractDelay, ".TI.ramfunc")
@@ -132,6 +134,12 @@ __interrupt void ecap1ISR(void)
                   (int32_t)ECAP_getEventTimeStamp(myECAP0_BASE, ECAP_EVENT_1);
     eCapPwmPeriod = (int32_t)ECAP_getEventTimeStamp(myECAP0_BASE, ECAP_EVENT_3) -
                     (int32_t)ECAP_getEventTimeStamp(myECAP0_BASE, ECAP_EVENT_1);
+}
+
+void delayCycles(uint32_t cycles) {
+    while(cycles--) {
+        __asm(" NOP");
+    }
 }
 
 int extractFrequency(const char *str, int *frequency) {
@@ -283,6 +291,7 @@ int extractSync(const char *str, int *sync) {
 }
 
 
+
 //
 // Main
 //
@@ -380,8 +389,12 @@ void main(void)
 
                 ePwm_curDuty = EPWM_getCounterCompareValue(myEPWM0_BASE, EPWM_COUNTER_COMPARE_A);   
 
+                delayCycles(DELAY_CNT);
+
                 EPWM_setTimeBasePeriod(myEPWM2_BASE, frequency);
                 EPWM_setTimeBasePeriod(myEPWM3_BASE, frequency);
+
+                delayCycles(DELAY_CNT);
                 
                 EPWM_setCounterCompareValue(myEPWM2_BASE, EPWM_COUNTER_COMPARE_A, (ePwm_TimeBase + 1 ) / 2 - 1);	
                 EPWM_setCounterCompareValue(myEPWM3_BASE, EPWM_COUNTER_COMPARE_A, (ePwm_TimeBase + 1 ) / 2 - 1); 
