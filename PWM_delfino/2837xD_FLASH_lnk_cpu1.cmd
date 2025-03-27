@@ -82,6 +82,14 @@ SECTIONS
    .stack              : > RAMM1       PAGE = 1
    .switch             : > FLASHB      PAGE = 0, ALIGN(8)
    .reset              : > RESET,      PAGE = 0, TYPE = DSECT /* not used, */
+   .TI.ramfunc : {
+        *(.TI.ramfunc)  /* Todas las funciones marcadas con pragma */
+    } LOAD = FLASHB, 
+      RUN = RAMLS0 | RAMLS1,  /* Combinar 2 bloques de RAM (4KB total) */
+      LOAD_START(_RamfuncsLoadStart),
+      LOAD_END(_RamfuncsLoadEnd),
+      RUN_START(_RamfuncsRunStart),
+      PAGE = 0, ALIGN(8)
 
 #if defined(__TI_EABI__)
    .init_array         : > FLASHB,       PAGE = 0,       ALIGN(8)

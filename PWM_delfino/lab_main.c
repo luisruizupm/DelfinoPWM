@@ -57,6 +57,8 @@
 #include <stdint.h> 
 #include <string.h>
 
+extern uint32_t _RamfuncsLoadStart, _RamfuncsLoadEnd, _RamfuncsRunStart;
+
 uint32_t ePwm_TimeBase;
 uint32_t ePwm_MinDuty;
 uint32_t ePwm_MaxDuty;
@@ -80,6 +82,18 @@ char rxBuffer[BUFFER_SIZE];  // Buffer para almacenar la cadena recibida
 volatile uint16_t rxIndex = 0; // Índice del buffer
 volatile uint8_t flagRxComplete = 0; // Flag para indicar que se recibió un mensaje completo
 
+
+#pragma CODE_SECTION(INT_mySCIA_RX_ISR, ".TI.ramfunc")
+#pragma CODE_SECTION(ecap1ISR, ".TI.ramfunc")
+#pragma CODE_SECTION(EPWM_setTimeBasePeriod, ".TI.ramfunc")
+#pragma CODE_SECTION(EPWM_setPhaseShift, ".TI.ramfunc")
+#pragma CODE_SECTION(extractFrequency, ".TI.ramfunc")
+#pragma CODE_SECTION(extractDelay, ".TI.ramfunc")
+#pragma CODE_SECTION(extractDeadp1, ".TI.ramfunc")
+#pragma CODE_SECTION(extractDeadp2, ".TI.ramfunc")
+#pragma CODE_SECTION(extractDeads1, ".TI.ramfunc")
+#pragma CODE_SECTION(extractDeads2, ".TI.ramfunc")
+#pragma CODE_SECTION(extractSync, ".TI.ramfunc")
 // Interrupt SCI RX
 __interrupt void INT_mySCIA_RX_ISR(void) {
     
@@ -274,6 +288,7 @@ int extractSync(const char *str, int *sync) {
 //
 void main(void)
 {
+    memcpy(&_RamfuncsRunStart, &_RamfuncsLoadStart, (size_t)&_RamfuncsLoadEnd - (size_t)&_RamfuncsLoadStart);
     Device_init();
     Interrupt_initModule();
     Interrupt_initVectorTable();

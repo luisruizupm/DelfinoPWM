@@ -64,6 +64,7 @@
                                 <option id="com.ti.ccstudio.buildDefinitions.C2000_22.6.compilerID.DIAG_SUPPRESS.1825195242" superClass="com.ti.ccstudio.buildDefinitions.C2000_22.6.compilerID.DIAG_SUPPRESS" valueType="stringList">
                                     <listOptionValue value="10063"/>
                                 </option>
+                                <option id="com.ti.ccstudio.buildDefinitions.C2000_22.6.compilerID.RAMFUNC.800545940" superClass="com.ti.ccstudio.buildDefinitions.C2000_22.6.compilerID.RAMFUNC" value="com.ti.ccstudio.buildDefinitions.C2000_22.6.compilerID.RAMFUNC.off" valueType="enumerated"/>
                             </tool>
                             <tool id="com.ti.ccstudio.buildDefinitions.C2000_22.6.exe.linkerDebug.831943111" name="C2000 Linker" superClass="com.ti.ccstudio.buildDefinitions.C2000_22.6.exe.linkerDebug">
                                 <option id="com.ti.ccstudio.buildDefinitions.C2000_22.6.linkerID.STACK_SIZE.817644438" superClass="com.ti.ccstudio.buildDefinitions.C2000_22.6.linkerID.STACK_SIZE" value="0x100" valueType="string"/>
@@ -82,6 +83,10 @@
                                     <listOptionValue value="libc.a"/>
                                 </option>
                                 <option id="com.ti.ccstudio.buildDefinitions.C2000_22.6.linkerID.ENTRY_POINT.373173260" superClass="com.ti.ccstudio.buildDefinitions.C2000_22.6.linkerID.ENTRY_POINT" value="code_start" valueType="string"/>
+                                <option id="com.ti.ccstudio.buildDefinitions.C2000_22.6.linkerID.INITIALIZATION_MODEL.1738319654" superClass="com.ti.ccstudio.buildDefinitions.C2000_22.6.linkerID.INITIALIZATION_MODEL" value="com.ti.ccstudio.buildDefinitions.C2000_22.6.linkerID.INITIALIZATION_MODEL.ROM_MODEL" valueType="enumerated"/>
+                                <option id="com.ti.ccstudio.buildDefinitions.C2000_22.6.linkerID.OTHER_FLAGS.1773410265" superClass="com.ti.ccstudio.buildDefinitions.C2000_22.6.linkerID.OTHER_FLAGS" valueType="stringList">
+                                    <listOptionValue value="--ramfunc=on"/>
+                                </option>
                             </tool>
                             <tool id="com.ti.ccstudio.buildDefinitions.C2000_22.6.hex.1197642334" name="C2000 Hex Utility" superClass="com.ti.ccstudio.buildDefinitions.C2000_22.6.hex"/>
                             <tool id="com.ti.ccstudio.buildDefinitions.sysConfig.1514725156" name="SysConfig" superClass="com.ti.ccstudio.buildDefinitions.sysConfig">
@@ -94,7 +99,7 @@
                         </toolChain>
                     </folderInfo>
                     <sourceEntries>
-                        <entry excluding="device/driverlib|2837xD_FLASH_lnk_cpu1.cmd" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+                        <entry excluding="2837xD_RAM_lnk_cpu1.cmd|device/driverlib" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
                     </sourceEntries>
                 </configuration>
             </storageModule>
