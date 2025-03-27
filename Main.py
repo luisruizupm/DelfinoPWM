@@ -177,13 +177,13 @@ class MainApp(tk.Tk):
             dead_time1 = int(self.s_dead_time1_var.get())
             dead_time2 = int(self.s_dead_time2_var.get())
 
-            phase_shift = max(0, round(180 * 25 / 9 * (1 - phase_shift / 90) - 1))
+            phase_shift = max(0, round((499 + 1) * phase_shift / 90 - 1))
 
             dead_time1 = round(max(dead_time1, 20) / 20)
             dead_time2 = round(max(dead_time2, 20) / 20)
 
-            self.serial_connection.write(f"PS:{phase_shift:03d}\n".encode())
-            print(f"Command sent: PS:{phase_shift:03d}")
+            self.serial_connection.write(f"SYNC:{phase_shift:03d}\n".encode())
+            print(f"Command sent: SYNC:{phase_shift:04d}")
             time.sleep(0.1)
             self.serial_connection.write(f"DS1:{dead_time1:02d}\n".encode())
             print(f"Command sent: DS1:{dead_time1:02d}")
@@ -241,7 +241,7 @@ class MainApp(tk.Tk):
             {"label": "Dead Time 2 (ns)", "from_": 20, "to": 500, "increment": 20, "initial": 100, "variable": self.p_dead_time2_var}
         ])
         self.add_spinbox_controls(right_frame, "Secondary Bridge", [
-            {"label": "Phase Shift", "from_": 0, "to": 90, "increment": 0.3, "initial": 90, "variable": self.s_phase_shift_var},
+            {"label": "Phase Shift", "from_": 0, "to": 180, "increment": 0.3, "initial": 90, "variable": self.s_phase_shift_var},
             {"label": "Dead Time 1", "from_": 20, "to": 500, "increment": 20, "initial": 100, "variable": self.s_dead_time1_var},
             {"label": "Dead Time 2", "from_": 20, "to": 500, "increment": 20, "initial": 100, "variable": self.s_dead_time2_var}
         ])
@@ -249,7 +249,7 @@ class MainApp(tk.Tk):
         update_p_params_button = tk.Button(left_frame, text="Update Primary", bg="#54AEFF", fg="white", width=20, command=self.primary_bridge_update)
         update_p_params_button.pack(side="left", padx=10)
 
-        update_s_params_button = tk.Button(right_frame, text="Update Secondary", bg="#54AEFF", fg="white", width=20)
+        update_s_params_button = tk.Button(right_frame, text="Update Secondary", bg="#54AEFF", fg="white", width=20, command=self.secondary_bridge_update)
         update_s_params_button.pack(side="right", padx=10)
         
         button_frame = tk.Frame(parent, bg="#1E1E1E", pady=10)

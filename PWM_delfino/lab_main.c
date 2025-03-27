@@ -268,6 +268,7 @@ int extractSync(const char *str, int *sync) {
 
 }
 
+
 //
 // Main
 //
@@ -315,6 +316,11 @@ void main(void)
     int delay = 0;
     int dead = 100;
     int sync_rect = 499;
+
+    uint32_t numerador;
+    uint32_t denominador;
+    uint16_t phaseshift;
+    uint16_t sync_delay;
 
 
     for (;;) {
@@ -366,22 +372,26 @@ void main(void)
                 EPWM_setCounterCompareValue(myEPWM3_BASE, EPWM_COUNTER_COMPARE_A, (ePwm_TimeBase + 1 ) / 2 - 1); 
 
 
-                uint32_t numerador = (uint32_t)delay * ePwm_TimeBase_init * 2;  // Evita overflow
-                uint32_t denominador = ePwm_TimeBase;                   // Divisor en un solo paso
-                uint16_t phaseshift = (uint16_t)(numerador / denominador);  // División segura
-                EPWM_setPhaseShift(myEPWM1_BASE, - phaseshift);   
+                numerador = (uint32_t)delay * ePwm_TimeBase * 2;  // Evita overflow
+                denominador = ePwm_TimeBase_init;                   // Divisor en un solo paso
+                phaseshift = (uint16_t)(numerador / denominador);  // División segura
+                EPWM_setPhaseShift(myEPWM1_BASE, - phaseshift);    
 
-                uint32_t numerador1 = (uint32_t)(sync_rect + 1) * (ePwm_TimeBase_init + 1);
-                uint32_t denominador1 = (ePwm_TimeBase + 1);
-                uint16_t sync_delay = (uint16_t)(numerador1 / denominador1) - 1;
+                numerador = (uint32_t)(sync_rect + 1) * (ePwm_TimeBase + 1);
+                denominador = (ePwm_TimeBase_init + 1);
+                sync_delay = (uint16_t)(numerador / denominador) - 1;
 
-                EPWM_setPhaseShift(myEPWM2_BASE, - sync_delay);
-                EPWM_setPhaseShift(myEPWM3_BASE, - sync_delay);        
+                EPWM_setPhaseShift(myEPWM2_BASE, sync_delay);
+                EPWM_setPhaseShift(myEPWM3_BASE, sync_delay);        
 
             }
 
             else if (extractDelay(rxBuffer, &delay)){
-                EPWM_setPhaseShift(myEPWM1_BASE, (- delay));
+                ePwm_TimeBase = EPWM_getTimeBasePeriod(myEPWM0_BASE);
+                numerador = (uint32_t)((delay) * (ePwm_TimeBase + 1)) * 2;  // Evita overflow
+                denominador = ePwm_TimeBase_init;                   // Divisor en un solo paso
+                phaseshift = (uint16_t)(numerador / denominador);  // División segura
+                EPWM_setPhaseShift(myEPWM1_BASE, - phaseshift);  
             }
 
             else if (extractDeadp1(rxBuffer, &dead)) {
@@ -409,8 +419,13 @@ void main(void)
             }
 
             else if (extractSync(rxBuffer, &sync_rect)) {
-                EPWM_setPhaseShift(myEPWM2_BASE, - (sync_rect * ePwm_TimeBase_init / ePwm_TimeBase));
-                EPWM_setPhaseShift(myEPWM3_BASE, - (sync_rect * ePwm_TimeBase_init / ePwm_TimeBase));
+                numerador = (uint32_t)(sync_rect + 1) * (ePwm_TimeBase + 1);
+                denominador = (ePwm_TimeBase_init + 1);
+                sync_delay = (uint16_t)(numerador / denominador) - 1;
+
+                EPWM_setPhaseShift(myEPWM2_BASE, sync_delay);
+                EPWM_setPhaseShift(myEPWM3_BASE, sync_delay);        
+
             
             }
 
