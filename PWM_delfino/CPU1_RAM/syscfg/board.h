@@ -122,6 +122,10 @@ extern "C"
 #define myEPWM3_EPWMB_GPIO 9
 #define myEPWM3_EPWMB_PIN_CONFIG GPIO_9_EPWM5B
 //
+// GPIO122 - GPIO Settings
+//
+#define myGPIO_SE_GPIO_PIN_CONFIG GPIO_122_GPIO122
+//
 // GPIO34 - GPIO Settings
 //
 #define myBoardLED0_GPIO_GPIO_PIN_CONFIG GPIO_34_GPIO34
@@ -145,15 +149,6 @@ extern "C"
 #define GPIO_PIN_SCITXDA 42
 #define mySCIA_SCITX_GPIO 42
 #define mySCIA_SCITX_PIN_CONFIG GPIO_42_SCITXDA
-
-//*****************************************************************************
-//
-// ECAP Configurations
-//
-//*****************************************************************************
-#define myECAP0_BASE ECAP1_BASE
-#define myECAP0_SIGNAL_MUNIT_BASE ECAP1SIGNALMONITORING_BASE
-void myECAP0_init();
 
 //*****************************************************************************
 //
@@ -218,6 +213,8 @@ void myECAP0_init();
 // GPIO Configurations
 //
 //*****************************************************************************
+#define myGPIO_SE 122
+void myGPIO_SE_init();
 #define myBoardLED0_GPIO 34
 void myBoardLED0_GPIO_init();
 #define myBoardLED1_GPIO 31
@@ -229,7 +226,7 @@ void myBoardLED1_GPIO_init();
 //
 //*****************************************************************************
 #define myINPUTXBARINPUT0_SOURCE 0
-#define myINPUTXBARINPUT0_INPUT XBAR_INPUT7
+#define myINPUTXBARINPUT0_INPUT XBAR_INPUT1
 void myINPUTXBARINPUT0_init();
 
 //*****************************************************************************
@@ -237,12 +234,6 @@ void myINPUTXBARINPUT0_init();
 // INTERRUPT Configurations
 //
 //*****************************************************************************
-
-// Interrupt Settings for INT_myECAP0
-// ISR need to be defined for the registered interrupts
-#define INT_myECAP0 INT_ECAP1
-#define INT_myECAP0_INTERRUPT_ACK_GROUP INTERRUPT_ACK_GROUP4
-extern __interrupt void ecap1ISR(void);
 
 // Interrupt Settings for INT_mySCIA_RX
 // ISR need to be defined for the registered interrupts
@@ -276,7 +267,6 @@ void mySCIA_init();
 //
 //*****************************************************************************
 void	Board_init();
-void	ECAP_init();
 void	EPWM_init();
 void	GPIO_init();
 void	INPUTXBAR_init();

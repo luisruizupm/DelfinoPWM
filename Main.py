@@ -119,20 +119,31 @@ class MainApp(tk.Tk):
         self.destroy()
 
     def set_frequency(self):
-        """Establecer la frecuencia a través de la conexión serial"""
+        """Establecer la frecuencia a través de la conexión serial en pasos de 5 Hz"""
         try:
             if not self.serial_connection or not self.serial_connection.is_open:
                 messagebox.showerror("Error", "Serial connection is not open")
                 return
 
-            f = float(self.frequency_var.get())
-            if not (1 <= f <= 200):  # Validar rango
-                messagebox.showerror("Error", "Frequency must be between 1-200 Hz")
+            if not hasattr(self, "current_frequency"):
+                self.current_frequency = 25  # Inicializar la frecuencia actual a 25 Hz
+
+            target_frequency = float(self.frequency_var.get())
+            if not (20 <= target_frequency <= 200):  # Validar rango
+                messagebox.showerror("Error", "Frequency must be between 20-200 kHz")
                 return
 
-            T = round(1 / f * 5e4 - 1)
-            self.serial_connection.write(f"PER:{T:04d}\n".encode())
-                        
+            step = 3 if target_frequency > self.current_frequency else -3
+
+            while (step > 0 and self.current_frequency < target_frequency) or (step < 0 and self.current_frequency > target_frequency):
+                self.current_frequency += step
+                if (step > 0 and self.current_frequency > target_frequency) or (step < 0 and self.current_frequency < target_frequency):
+                    self.current_frequency = target_frequency  # Ajustar el valor final
+
+                T = round(1 / self.current_frequency * 5e4 - 1)
+                self.serial_connection.write(f"PER:{T:04d}\n".encode())
+                time.sleep(0.1)  # Pequeña pausa para simular la transición gradual
+
         except ValueError:
             messagebox.showerror("Error", "Please enter a valid number")
         except Exception as e:
@@ -209,7 +220,7 @@ class MainApp(tk.Tk):
         self.frequency_var = tk.StringVar(value="25")  # Valor inicial
         self.frequency_spinbox = tk.Spinbox(
             freq_frame, 
-            from_=1, 
+            from_=10, 
             to=200, 
             increment=1, 
             width=10, 
@@ -246,6 +257,19 @@ class MainApp(tk.Tk):
             {"label": "Dead Time 2", "from_": 20, "to": 500, "increment": 20, "initial": 100, "variable": self.s_dead_time2_var}
         ])
 
+        self.enable_p_PWM_var = tk.BooleanVar(value=False)
+        self.enable_s_PWM_var = tk.BooleanVar(value=False)
+
+        enable_p_PWM = tk.Checkbutton(left_frame, text="Enable PWM", bg="#252525", fg="white",
+                              selectcolor="#252525", variable=self.enable_p_PWM_var, 
+                              command=self.toggle_primary_pwm)
+        enable_p_PWM.pack(pady=5)
+        
+        enable_s_PWM = tk.Checkbutton(right_frame, text="Enable PWM", bg="#252525", fg="white",
+                              selectcolor="#252525", variable=self.enable_s_PWM_var, 
+                              command=self.toggle_secondary_pwm)
+        enable_s_PWM.pack(pady=5)
+
         update_p_params_button = tk.Button(left_frame, text="Update Primary", bg="#54AEFF", fg="white", width=20, command=self.primary_bridge_update)
         update_p_params_button.pack(side="left", padx=10)
 
@@ -258,6 +282,19 @@ class MainApp(tk.Tk):
         open_serial_button = tk.Button(button_frame, text="Open Serial Connection", command=self.open_serial, bg="#54AEFF", fg="white", width=20)
         open_serial_button.pack(side="right", padx=10)
     
+    def toggle_primary_pwm(self):
+        print(f"Primary PWM Enabled: {self.enable_p_PWM_var.get()}")
+        if self.enable_p_PWM_var.get():
+            self.serial_connection.write(f"pwmpon\n".encode())
+        else:
+            self.serial_connection.write(f"pwmpoff\n".encode())    
+    def toggle_secondary_pwm(self):
+        print(f"Secondary PWM Enabled: {self.enable_s_PWM_var.get()}")
+        if self.enable_s_PWM_var.get():
+            self.serial_connection.write(f"pwmson\n".encode())
+        else:
+            self.serial_connection.write(f"pwmsoff\n".encode())
+
     def add_spinbox_controls(self, parent, title, spinbox_configs):
         tk.Label(parent, text=title, bg="#252525", fg="white", font=("Arial", 12, "bold")).pack(pady=5)
         for config in spinbox_configs:

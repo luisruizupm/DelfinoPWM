@@ -50,7 +50,6 @@ void Board_init()
 	PinMux_init();
 	INPUTXBAR_init();
 	SYNC_init();
-	ECAP_init();
 	EPWM_init();
 	GPIO_init();
 	SCI_init();
@@ -114,6 +113,8 @@ void PinMux_init()
 	GPIO_setPadConfig(myEPWM3_EPWMB_GPIO, GPIO_PIN_TYPE_STD);
 	GPIO_setQualificationMode(myEPWM3_EPWMB_GPIO, GPIO_QUAL_SYNC);
 
+	// GPIO122 -> myGPIO_SE Pinmux
+	GPIO_setPinConfig(GPIO_122_GPIO122);
 	// GPIO34 -> myBoardLED0_GPIO Pinmux
 	GPIO_setPinConfig(GPIO_34_GPIO34);
 	// GPIO31 -> myBoardLED1_GPIO Pinmux
@@ -135,105 +136,6 @@ void PinMux_init()
 
 //*****************************************************************************
 //
-// ECAP Configurations
-//
-//*****************************************************************************
-void ECAP_init(){
-	myECAP0_init();
-}
-
-void myECAP0_init(){
-	//
-	// Disable ,clear all capture flags and interrupts
-	//
-	ECAP_disableInterrupt(myECAP0_BASE,
-		(ECAP_ISR_SOURCE_CAPTURE_EVENT_1  |
-		ECAP_ISR_SOURCE_CAPTURE_EVENT_2  |
-		ECAP_ISR_SOURCE_CAPTURE_EVENT_3  |
-		ECAP_ISR_SOURCE_CAPTURE_EVENT_4  |
-		ECAP_ISR_SOURCE_COUNTER_OVERFLOW |
-		ECAP_ISR_SOURCE_COUNTER_PERIOD   |
-		ECAP_ISR_SOURCE_COUNTER_COMPARE));
-	ECAP_clearInterrupt(myECAP0_BASE,
-		(ECAP_ISR_SOURCE_CAPTURE_EVENT_1  |
-		ECAP_ISR_SOURCE_CAPTURE_EVENT_2  |
-		ECAP_ISR_SOURCE_CAPTURE_EVENT_3  |
-		ECAP_ISR_SOURCE_CAPTURE_EVENT_4  |
-		ECAP_ISR_SOURCE_COUNTER_OVERFLOW |
-		ECAP_ISR_SOURCE_COUNTER_PERIOD   |
-		ECAP_ISR_SOURCE_COUNTER_COMPARE));
-	//
-	// Disables time stamp capture.
-	//
-	ECAP_disableTimeStampCapture(myECAP0_BASE);
-	//
-	// Stops Time stamp counter.
-	//
-	ECAP_stopCounter(myECAP0_BASE);
-	//
-	// Sets eCAP in Capture mode.
-	//
-	ECAP_enableCaptureMode(myECAP0_BASE);
-	//
-	// Sets the capture mode.
-	//
-	ECAP_setCaptureMode(myECAP0_BASE,ECAP_CONTINUOUS_CAPTURE_MODE,ECAP_EVENT_4);
-	//
-	// Sets the Capture event prescaler.
-	//
-	ECAP_setEventPrescaler(myECAP0_BASE, 0U);
-	//
-	// Sets the Capture event polarity.
-	//
-	ECAP_setEventPolarity(myECAP0_BASE,ECAP_EVENT_1,ECAP_EVNT_RISING_EDGE);
-	ECAP_setEventPolarity(myECAP0_BASE,ECAP_EVENT_2,ECAP_EVNT_FALLING_EDGE);
-	ECAP_setEventPolarity(myECAP0_BASE,ECAP_EVENT_3,ECAP_EVNT_RISING_EDGE);
-	ECAP_setEventPolarity(myECAP0_BASE,ECAP_EVENT_4,ECAP_EVNT_FALLING_EDGE);
-	//
-	// Configure counter reset on events
-	//
-	ECAP_disableCounterResetOnEvent(myECAP0_BASE,ECAP_EVENT_1);
-	ECAP_disableCounterResetOnEvent(myECAP0_BASE,ECAP_EVENT_2);
-	ECAP_disableCounterResetOnEvent(myECAP0_BASE,ECAP_EVENT_3);
-	ECAP_disableCounterResetOnEvent(myECAP0_BASE,ECAP_EVENT_4);
-	//
-	// Sets a phase shift value count.
-	//
-	ECAP_setPhaseShiftCount(myECAP0_BASE,0U);
-	//
-	// Disable counter loading with phase shift value.
-	//
-	ECAP_disableLoadCounter(myECAP0_BASE);
-	//
-	// Configures Sync out signal mode.
-	//
-	ECAP_setSyncOutMode(myECAP0_BASE,ECAP_SYNC_OUT_SYNCI);
-	//
-	// Configures emulation mode.
-	//
-	ECAP_setEmulationMode(myECAP0_BASE,ECAP_EMULATION_STOP);
-	//
-	// Starts Time stamp counter for myECAP0.
-	//
-	ECAP_startCounter(myECAP0_BASE);
-	//
-	// Enables time stamp capture for myECAP0.
-	//
-	ECAP_enableTimeStampCapture(myECAP0_BASE);
-	//
-	// Re-arms the eCAP module for myECAP0.
-	//
-	ECAP_reArm(myECAP0_BASE);
-	//
-	// Enables interrupt source for myECAP0.
-	//
-	ECAP_enableInterrupt(myECAP0_BASE,(ECAP_ISR_SOURCE_CAPTURE_EVENT_3));
-
-    //-----------------Signal Monitoring--------------------//
-}
-
-//*****************************************************************************
-//
 // EPWM Configurations
 //
 //*****************************************************************************
@@ -244,6 +146,7 @@ void EPWM_init(){
     EPWM_setTimeBaseCounterMode(myEPWM0_BASE, EPWM_COUNTER_MODE_UP);	
     EPWM_disablePhaseShiftLoad(myEPWM0_BASE);	
     EPWM_setPhaseShift(myEPWM0_BASE, 0);	
+    EPWM_forceSyncPulse(myEPWM0_BASE);	
     EPWM_setSyncOutPulseMode(myEPWM0_BASE, EPWM_SYNC_OUT_PULSE_ON_COUNTER_ZERO);	
     EPWM_setCounterCompareValue(myEPWM0_BASE, EPWM_COUNTER_COMPARE_A, 999);	
     EPWM_setCounterCompareShadowLoadMode(myEPWM0_BASE, EPWM_COUNTER_COMPARE_A, EPWM_COMP_LOAD_ON_CNTR_ZERO);	
@@ -367,10 +270,17 @@ void EPWM_init(){
 //
 //*****************************************************************************
 void GPIO_init(){
+	myGPIO_SE_init();
 	myBoardLED0_GPIO_init();
 	myBoardLED1_GPIO_init();
 }
 
+void myGPIO_SE_init(){
+	GPIO_setPadConfig(myGPIO_SE, GPIO_PIN_TYPE_STD);
+	GPIO_setQualificationMode(myGPIO_SE, GPIO_QUAL_SYNC);
+	GPIO_setDirectionMode(myGPIO_SE, GPIO_DIR_MODE_OUT);
+	GPIO_setControllerCore(myGPIO_SE, GPIO_CORE_CPU1);
+}
 void myBoardLED0_GPIO_init(){
 	GPIO_setPadConfig(myBoardLED0_GPIO, GPIO_PIN_TYPE_STD);
 	GPIO_setQualificationMode(myBoardLED0_GPIO, GPIO_QUAL_SYNC);
@@ -403,11 +313,6 @@ void myINPUTXBARINPUT0_init(){
 //
 //*****************************************************************************
 void INTERRUPT_init(){
-	
-	// Interrupt Settings for INT_myECAP0
-	// ISR need to be defined for the registered interrupts
-	Interrupt_register(INT_myECAP0, &ecap1ISR);
-	Interrupt_enable(INT_myECAP0);
 	
 	// Interrupt Settings for INT_mySCIA_RX
 	// ISR need to be defined for the registered interrupts

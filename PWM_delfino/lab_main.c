@@ -53,6 +53,7 @@
 #include "driverlib.h"
 #include "device.h"
 #include "board.h"
+#include "epwm.h"
 //#include <cstdint>
 #include <stdint.h> 
 #include <string.h>
@@ -64,6 +65,8 @@ uint32_t ePwm_MinDuty;
 uint32_t ePwm_MaxDuty;
 uint32_t ePwm_curDuty;
 
+uint16_t rxStatus;
+
 uint16_t AdcBuf[50];            // Buffer to store ADC samples.
 uint16_t AdcBufB[50];           // Buffer to store B ADC samples
 uint16_t *AdcBufPtr = AdcBuf;   // Pointer to ADC buffer samples.
@@ -72,11 +75,10 @@ uint16_t LedCtr = 0;            // Counter to slow down LED toggle in ADC ISR.
 uint16_t DutyModOn = 0;         // Flag to turn on/off duty cycle modulation.
 uint16_t DutyModDir = 0;        // Flag to control duty mod direction up/down.
 uint16_t DutyModCtr = 0;        // Counter to slow down rate of modulation.
-int32_t eCapPwmDuty;            // Percent = (eCapPwmDuty/eCapPwmPeriod)*100.
-int32_t eCapPwmPeriod;          // Frequency = DEVICE_SYSCLK_FREQ/eCapPwmPeriod.
 
 // Definición de variables globales
 #define BUFFER_SIZE 256  // Tamaño máximo del buffer
+#define DELAY_CNT 5
 
 char rxBuffer[BUFFER_SIZE];  // Buffer para almacenar la cadena recibida
 volatile uint16_t rxIndex = 0; // Índice del buffer
@@ -84,8 +86,8 @@ volatile uint8_t flagRxComplete = 0; // Flag para indicar que se recibió un men
 
 
 #pragma CODE_SECTION(INT_mySCIA_RX_ISR, ".TI.ramfunc")
-#pragma CODE_SECTION(ecap1ISR, ".TI.ramfunc")
 #pragma CODE_SECTION(EPWM_setTimeBasePeriod, ".TI.ramfunc")
+#pragma CODE_SECTION(EPWM_setCounterCompareValue, ".TI.ramfunc")
 #pragma CODE_SECTION(EPWM_setPhaseShift, ".TI.ramfunc")
 #pragma CODE_SECTION(extractFrequency, ".TI.ramfunc")
 #pragma CODE_SECTION(extractDelay, ".TI.ramfunc")
@@ -95,10 +97,22 @@ volatile uint8_t flagRxComplete = 0; // Flag para indicar que se recibió un men
 #pragma CODE_SECTION(extractDeads2, ".TI.ramfunc")
 #pragma CODE_SECTION(extractSync, ".TI.ramfunc")
 // Interrupt SCI RX
+
+char receivedChar;
 __interrupt void INT_mySCIA_RX_ISR(void) {
     
     
-    char receivedChar = SCI_readCharBlockingFIFO(mySCIA_BASE);
+    receivedChar = SCI_readCharBlockingFIFO(mySCIA_BASE);
+
+    rxStatus = SCI_getRxStatus(mySCIA_BASE);
+            if((rxStatus & SCI_RXSTATUS_ERROR) != 0)
+            {
+                //
+                //If Execution stops here there is some error
+                //Analyze SCI_getRxStatus() API return value
+                //
+                ESTOP0;
+            }
 
     // Depuración: enviar el carácter recibido de vuelta
     SCI_writeCharBlockingNonFIFO(mySCIA_BASE, receivedChar);
@@ -123,15 +137,11 @@ __interrupt void INT_mySCIA_RX_ISR(void) {
     Interrupt_clearACKGroup(INT_mySCIA_RX_INTERRUPT_ACK_GROUP);
 }
 
-__interrupt void ecap1ISR(void)
-{
-    Interrupt_clearACKGroup(INT_myECAP0_INTERRUPT_ACK_GROUP);
-    ECAP_clearGlobalInterrupt(myECAP0_BASE);
-    ECAP_clearInterrupt(myECAP0_BASE, ECAP_ISR_SOURCE_CAPTURE_EVENT_3);
-    eCapPwmDuty = (int32_t)ECAP_getEventTimeStamp(myECAP0_BASE, ECAP_EVENT_2) -
-                  (int32_t)ECAP_getEventTimeStamp(myECAP0_BASE, ECAP_EVENT_1);
-    eCapPwmPeriod = (int32_t)ECAP_getEventTimeStamp(myECAP0_BASE, ECAP_EVENT_3) -
-                    (int32_t)ECAP_getEventTimeStamp(myECAP0_BASE, ECAP_EVENT_1);
+
+void delayCycles(uint32_t cycles) {
+    while(cycles--) {
+        __asm(" NOP");
+    }
 }
 
 int extractFrequency(const char *str, int *frequency) {
@@ -283,6 +293,21 @@ int extractSync(const char *str, int *sync) {
 }
 
 
+void setPWMOutputState(uint32_t base, bool enable) {
+    if (enable) {
+        // Reactivar el PWM deshabilitando la condición de Trip Zone
+        EPWM_clearTripZoneFlag(base, EPWM_TZ_INTERRUPT);  // Limpiar banderas
+        EPWM_clearTripZoneFlag(base, EPWM_TZ_FLAG_OST);   // Limpiar evento de One-Shot
+    } else {
+        // Configurar Trip Zone para forzar ambas salidas a LOW
+        EPWM_setTripZoneAction(base, EPWM_TZ_ACTION_EVENT_TZA, EPWM_TZ_ACTION_LOW);
+        EPWM_setTripZoneAction(base, EPWM_TZ_ACTION_EVENT_TZB, EPWM_TZ_ACTION_LOW);
+
+        // Forzar un evento de Trip Zone
+        EPWM_forceTripZoneEvent(base, EPWM_TZ_FORCE_EVENT_OST); // One-Shot Trip
+    }
+}
+
 //
 // Main
 //
@@ -304,6 +329,11 @@ void main(void)
 
     EPWM_setPhaseShift(myEPWM2_BASE, 499);
     EPWM_setPhaseShift(myEPWM3_BASE, 499);
+
+    setPWMOutputState(myEPWM0_BASE, false);
+    setPWMOutputState(myEPWM1_BASE, false);
+    setPWMOutputState(myEPWM2_BASE, false);
+    setPWMOutputState(myEPWM3_BASE, false);
 
 
 
@@ -339,11 +369,7 @@ void main(void)
 
 
     for (;;) {
-        // Comprobar errores
-        //rxStatus = SCI_getRxStatus(mySCIA_BASE);
-        //if ((rxStatus & SCI_RXSTATUS_ERROR) != 0) {
-        //    ESTOP0; // Detener ejecución si hay un error
-        //}
+
 
         // Verificar si la interrupción ha recibido una cadena completa
         if (flagRxComplete) {
@@ -369,35 +395,55 @@ void main(void)
             }
 
             else if (extractFrequency(rxBuffer, &frequency)) {
-
-                EPWM_setTimeBasePeriod(myEPWM0_BASE, frequency);
-                EPWM_setTimeBasePeriod(myEPWM1_BASE, frequency);
-
-                ePwm_TimeBase = EPWM_getTimeBasePeriod(myEPWM0_BASE);
+                uint32_t previousPeriod = ePwm_TimeBase; // Guardar el periodo anterior
                 
-                EPWM_setCounterCompareValue(myEPWM0_BASE, EPWM_COUNTER_COMPARE_A, (ePwm_TimeBase + 1 ) / 2 - 1);	
-                EPWM_setCounterCompareValue(myEPWM1_BASE, EPWM_COUNTER_COMPARE_A, (ePwm_TimeBase + 1 ) / 2 - 1);	
-
+                // Determinar el orden de configuración según si el nuevo periodo es mayor o menor
+                if(frequency > previousPeriod) {
+                    // Nuevo periodo mayor: primero TimeBase, luego Compare
+                    EPWM_setTimeBasePeriod(myEPWM0_BASE, frequency);
+                    EPWM_setTimeBasePeriod(myEPWM1_BASE, frequency);
+                    EPWM_setTimeBasePeriod(myEPWM2_BASE, frequency);
+                    EPWM_setTimeBasePeriod(myEPWM3_BASE, frequency);
+                    
+                    ePwm_TimeBase = frequency; // Actualizar el valor actual
+                    
+                    uint32_t newCompareValue = (ePwm_TimeBase + 1) / 2 - 1;
+                    EPWM_setCounterCompareValue(myEPWM0_BASE, EPWM_COUNTER_COMPARE_A, newCompareValue);
+                    EPWM_setCounterCompareValue(myEPWM1_BASE, EPWM_COUNTER_COMPARE_A, newCompareValue);
+                    EPWM_setCounterCompareValue(myEPWM2_BASE, EPWM_COUNTER_COMPARE_A, newCompareValue);
+                    EPWM_setCounterCompareValue(myEPWM3_BASE, EPWM_COUNTER_COMPARE_A, newCompareValue);
+                } else {
+                    // Nuevo periodo menor: primero Compare, luego TimeBase
+                    uint32_t newCompareValue = (frequency + 1) / 2 - 1;
+                    EPWM_setCounterCompareValue(myEPWM0_BASE, EPWM_COUNTER_COMPARE_A, newCompareValue);
+                    EPWM_setCounterCompareValue(myEPWM1_BASE, EPWM_COUNTER_COMPARE_A, newCompareValue);
+                    EPWM_setCounterCompareValue(myEPWM2_BASE, EPWM_COUNTER_COMPARE_A, newCompareValue);
+                    EPWM_setCounterCompareValue(myEPWM3_BASE, EPWM_COUNTER_COMPARE_A, newCompareValue);
+                    
+                    EPWM_setTimeBasePeriod(myEPWM0_BASE, frequency);
+                    EPWM_setTimeBasePeriod(myEPWM1_BASE, frequency);
+                    EPWM_setTimeBasePeriod(myEPWM2_BASE, frequency);
+                    EPWM_setTimeBasePeriod(myEPWM3_BASE, frequency);
+                    
+                    ePwm_TimeBase = frequency; // Actualizar el valor actual
+                }
+                
                 ePwm_curDuty = EPWM_getCounterCompareValue(myEPWM0_BASE, EPWM_COUNTER_COMPARE_A);   
 
-                EPWM_setTimeBasePeriod(myEPWM2_BASE, frequency);
-                EPWM_setTimeBasePeriod(myEPWM3_BASE, frequency);
-                
-                EPWM_setCounterCompareValue(myEPWM2_BASE, EPWM_COUNTER_COMPARE_A, (ePwm_TimeBase + 1 ) / 2 - 1);	
-                EPWM_setCounterCompareValue(myEPWM3_BASE, EPWM_COUNTER_COMPARE_A, (ePwm_TimeBase + 1 ) / 2 - 1); 
-
-
-                numerador = (uint32_t)delay * ePwm_TimeBase * 2;  // Evita overflow
-                denominador = ePwm_TimeBase_init;                   // Divisor en un solo paso
-                phaseshift = (uint16_t)(numerador / denominador);  // División segura
-                EPWM_setPhaseShift(myEPWM1_BASE, - phaseshift);    
+                // Configuración de los phase shifts (igual que antes)
+                numerador = (uint32_t)delay * ePwm_TimeBase * 2;
+                denominador = ePwm_TimeBase_init;
+                phaseshift = (uint16_t)(numerador / denominador);
+                EPWM_setPhaseShift(myEPWM1_BASE, -phaseshift);    
 
                 numerador = (uint32_t)(sync_rect + 1) * (ePwm_TimeBase + 1);
                 denominador = (ePwm_TimeBase_init + 1);
                 sync_delay = (uint16_t)(numerador / denominador) - 1;
 
                 EPWM_setPhaseShift(myEPWM2_BASE, sync_delay);
-                EPWM_setPhaseShift(myEPWM3_BASE, sync_delay);        
+                EPWM_setPhaseShift(myEPWM3_BASE, sync_delay); 
+                
+                EPWM_forceSyncPulse(myEPWM0_BASE);      
 
             }
 
@@ -442,6 +488,32 @@ void main(void)
                 EPWM_setPhaseShift(myEPWM3_BASE, sync_delay);        
 
             
+            }
+
+            // Enable/disable PWM outputs:
+            else if (strcmp(rxBuffer, "pwmpon") == 0) {
+                setPWMOutputState(myEPWM0_BASE, true);
+                setPWMOutputState(myEPWM1_BASE, true);
+                msg = "\r\nPWM outputs ENABLED (SW force disabled)\0";
+                SCI_writeCharArray(mySCIA_BASE, (uint16_t*)msg, 43);
+            }
+            else if (strcmp(rxBuffer, "pwmpoff") == 0) {
+                setPWMOutputState(myEPWM0_BASE, false);
+                setPWMOutputState(myEPWM1_BASE, false);
+                msg = "\r\nPWM outputs DISABLED (forced LOW)\0";
+                SCI_writeCharArray(mySCIA_BASE, (uint16_t*)msg, 37);
+            }
+            else if (strcmp(rxBuffer, "pwmson") == 0) {
+                setPWMOutputState(myEPWM2_BASE, true);
+                setPWMOutputState(myEPWM3_BASE, true);
+                msg = "\r\nPWM outputs ENABLED (SW force disabled)\0";
+                SCI_writeCharArray(mySCIA_BASE, (uint16_t*)msg, 43);
+            }
+            else if (strcmp(rxBuffer, "pwmsoff") == 0) {
+                setPWMOutputState(myEPWM2_BASE, false);
+                setPWMOutputState(myEPWM3_BASE, false);
+                msg = "\r\nPWM outputs DISABLED (forced LOW)\0";
+                SCI_writeCharArray(mySCIA_BASE, (uint16_t*)msg, 37);
             }
 
             msg = "\r\nInput: \0";

@@ -12,13 +12,13 @@
 const led              = scripting.addModule("/driverlib/board_components/led", {}, false);
 const led1             = led.addInstance();
 const led2             = led.addInstance();
-const ecap             = scripting.addModule("/driverlib/ecap.js", {}, false);
-const ecap1            = ecap.addInstance();
 const epwm             = scripting.addModule("/driverlib/epwm.js", {}, false);
 const epwm1            = epwm.addInstance();
 const epwm2            = epwm.addInstance();
 const epwm3            = epwm.addInstance();
 const epwm4            = epwm.addInstance();
+const gpio             = scripting.addModule("/driverlib/gpio.js", {}, false);
+const gpio3            = gpio.addInstance();
 const inputxbar        = scripting.addModule("/driverlib/inputxbar.js", {}, false);
 const inputxbar1       = inputxbar.addInstance();
 const inputxbar_input  = scripting.addModule("/driverlib/inputxbar_input.js");
@@ -34,16 +34,6 @@ led1.$hardware = system.deviceData.board.components.LED5;
 
 led2.$name     = "myBoardLED1";
 led2.$hardware = system.deviceData.board.components.LED4;
-
-ecap1.$name                    = "myECAP0";
-ecap1.eventStop                = "ECAP_EVENT_4";
-ecap1.eventTwoPolarity         = "ECAP_EVNT_FALLING_EDGE";
-ecap1.eventFourPolarity        = "ECAP_EVNT_FALLING_EDGE";
-ecap1.registerInterrupts       = true;
-ecap1.enableInterrupt          = true;
-ecap1.interruptSourceCapture   = ["ECAP_ISR_SOURCE_CAPTURE_EVENT_3"];
-ecap1.ecapInt.interruptHandler = "ecap1ISR";
-ecap1.ecapInt.enableInterrupt  = true;
 
 epwm1.$name                                                      = "myEPWM0";
 epwm1.epwmActionQualifier_EPWM_AQ_OUTPUT_A_shadowMode            = true;
@@ -61,6 +51,7 @@ epwm1.epwmTimebase_syncOutPulseMode                              = "EPWM_SYNC_OU
 epwm1.epwmTimebase_counterMode                                   = "EPWM_COUNTER_MODE_UP";
 epwm1.epwmTimebase_period                                        = 1999;
 epwm1.epwmActionQualifier_EPWM_AQ_OUTPUT_A_ON_TIMEBASE_ZERO      = "EPWM_AQ_OUTPUT_LOW";
+epwm1.epwmTimebase_forceSyncPulse                                = true;
 epwm1.epwm.$assign                                               = "EPWM1";
 epwm1.epwm.epwm_aPin.$assign                                     = "boosterpack1.40";
 epwm1.epwm.epwm_bPin.$assign                                     = "boosterpack1.39";
@@ -123,21 +114,24 @@ epwm4.$hardware                                                  = system.device
 epwm4.epwmActionQualifier_EPWM_AQ_OUTPUT_A_ON_TIMEBASE_UP_CMPA   = "EPWM_AQ_OUTPUT_LOW";
 epwm4.epwmActionQualifier_EPWM_AQ_OUTPUT_A_ON_TIMEBASE_ZERO      = "EPWM_AQ_OUTPUT_HIGH";
 
+gpio3.$name     = "myGPIO_SE";
+gpio3.direction = "GPIO_DIR_MODE_OUT";
+
 inputxbar1.$name = "myINPUTXBAR0";
 
-inputxbar_input1.$name          = "myINPUTXBARINPUT0";
-inputxbar_input1.inputxbarInput = "XBAR_INPUT7";
+inputxbar_input1.$name = "myINPUTXBARINPUT0";
 
 sci1.$name                      = "mySCIA";
 sci1.selectRegisteredInterrupts = ["registerRxInt"];
 sci1.baudRates                  = 9600;
-sci1.rxFifo                     = "SCI_FIFO_RX1";
 sci1.enabledFIFOInterrupts      = ["SCI_INT_RXFF"];
+sci1.rxFifo                     = "SCI_FIFO_RX1";
+sci1.sciRXInt.enableInterrupt   = true;
+sci1.rxQual.$name               = "myGPIOQUAL0";
+sci1.sci.$assign                = "SCIA";
 sci1.sci.scirxdPin.$assign      = "GPIO43";
 sci1.sci.scitxdPin.$assign      = "GPIO42";
-sci1.rxQual.$name               = "myGPIOQUAL0";
 sci1.txQual.$name               = "myGPIOQUAL1";
-sci1.sciRXInt.enableInterrupt   = true;
 
 /**
  * Pinmux solution for unlocked pins/peripherals. This ensures that minor changes to the automatic solver in a future
@@ -155,4 +149,4 @@ epwm3.epwm.epwm_bPin.$suggestSolution = "boosterpack2.79";
 epwm4.epwm.$suggestSolution           = "EPWM5";
 epwm4.epwm.epwm_aPin.$suggestSolution = "boosterpack2.78";
 epwm4.epwm.epwm_bPin.$suggestSolution = "boosterpack2.77";
-sci1.sci.$suggestSolution             = "SCIA";
+gpio3.gpioPin.$suggestSolution        = "boosterpack1.17";
