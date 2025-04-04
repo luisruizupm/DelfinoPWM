@@ -121,6 +121,22 @@ extern "C"
 #define GPIO_PIN_EPWM5B 9
 #define myEPWM3_EPWMB_GPIO 9
 #define myEPWM3_EPWMB_PIN_CONFIG GPIO_9_EPWM5B
+
+//
+// EPWM6 -> myEPWM4 Pinmux
+//
+//
+// EPWM6A - GPIO Settings
+//
+#define GPIO_PIN_EPWM6A 10
+#define myEPWM4_EPWMA_GPIO 10
+#define myEPWM4_EPWMA_PIN_CONFIG GPIO_10_EPWM6A
+//
+// EPWM6B - GPIO Settings
+//
+#define GPIO_PIN_EPWM6B 11
+#define myEPWM4_EPWMB_GPIO 11
+#define myEPWM4_EPWMB_PIN_CONFIG GPIO_11_EPWM6B
 //
 // GPIO122 - GPIO Settings
 //
@@ -207,6 +223,19 @@ extern "C"
 #define myEPWM3_TZA_ACTION EPWM_TZ_ACTION_HIGH_Z
 #define myEPWM3_TZB_ACTION EPWM_TZ_ACTION_HIGH_Z
 #define myEPWM3_INTERRUPT_SOURCE EPWM_INT_TBCTR_DISABLED
+#define myEPWM4_BASE EPWM6_BASE
+#define myEPWM4_TBPRD 1999
+#define myEPWM4_COUNTER_MODE EPWM_COUNTER_MODE_UP
+#define myEPWM4_TBPHS 0
+#define myEPWM4_CMPA 999
+#define myEPWM4_CMPB 0
+#define myEPWM4_CMPC 0
+#define myEPWM4_CMPD 0
+#define myEPWM4_DBRED 5
+#define myEPWM4_DBFED 5
+#define myEPWM4_TZA_ACTION EPWM_TZ_ACTION_HIGH_Z
+#define myEPWM4_TZB_ACTION EPWM_TZ_ACTION_HIGH_Z
+#define myEPWM4_INTERRUPT_SOURCE EPWM_INT_TBCTR_DISABLED
 
 //*****************************************************************************
 //

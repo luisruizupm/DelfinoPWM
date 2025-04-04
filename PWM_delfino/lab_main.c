@@ -329,6 +329,7 @@ void main(void)
 
     EPWM_setPhaseShift(myEPWM2_BASE, 499);
     EPWM_setPhaseShift(myEPWM3_BASE, 499);
+    EPWM_setPhaseShift(myEPWM4_BASE, 499);
 
     setPWMOutputState(myEPWM0_BASE, false);
     setPWMOutputState(myEPWM1_BASE, false);
@@ -404,6 +405,7 @@ void main(void)
                     EPWM_setTimeBasePeriod(myEPWM1_BASE, frequency);
                     EPWM_setTimeBasePeriod(myEPWM2_BASE, frequency);
                     EPWM_setTimeBasePeriod(myEPWM3_BASE, frequency);
+                    EPWM_setTimeBasePeriod(myEPWM4_BASE, frequency);
                     
                     ePwm_TimeBase = frequency; // Actualizar el valor actual
                     
@@ -412,6 +414,7 @@ void main(void)
                     EPWM_setCounterCompareValue(myEPWM1_BASE, EPWM_COUNTER_COMPARE_A, newCompareValue);
                     EPWM_setCounterCompareValue(myEPWM2_BASE, EPWM_COUNTER_COMPARE_A, newCompareValue);
                     EPWM_setCounterCompareValue(myEPWM3_BASE, EPWM_COUNTER_COMPARE_A, newCompareValue);
+                    EPWM_setCounterCompareValue(myEPWM4_BASE, EPWM_COUNTER_COMPARE_A, newCompareValue);
                 } else {
                     // Nuevo periodo menor: primero Compare, luego TimeBase
                     uint32_t newCompareValue = (frequency + 1) / 2 - 1;
@@ -419,11 +422,13 @@ void main(void)
                     EPWM_setCounterCompareValue(myEPWM1_BASE, EPWM_COUNTER_COMPARE_A, newCompareValue);
                     EPWM_setCounterCompareValue(myEPWM2_BASE, EPWM_COUNTER_COMPARE_A, newCompareValue);
                     EPWM_setCounterCompareValue(myEPWM3_BASE, EPWM_COUNTER_COMPARE_A, newCompareValue);
+                    EPWM_setCounterCompareValue(myEPWM4_BASE, EPWM_COUNTER_COMPARE_A, newCompareValue);
                     
                     EPWM_setTimeBasePeriod(myEPWM0_BASE, frequency);
                     EPWM_setTimeBasePeriod(myEPWM1_BASE, frequency);
                     EPWM_setTimeBasePeriod(myEPWM2_BASE, frequency);
                     EPWM_setTimeBasePeriod(myEPWM3_BASE, frequency);
+                    EPWM_setTimeBasePeriod(myEPWM4_BASE, frequency);
                     
                     ePwm_TimeBase = frequency; // Actualizar el valor actual
                 }
@@ -441,7 +446,8 @@ void main(void)
                 sync_delay = (uint16_t)(numerador / denominador) - 1;
 
                 EPWM_setPhaseShift(myEPWM2_BASE, sync_delay);
-                EPWM_setPhaseShift(myEPWM3_BASE, sync_delay); 
+                EPWM_setPhaseShift(myEPWM3_BASE, sync_delay);
+                EPWM_setPhaseShift(myEPWM4_BASE, sync_delay); 
                 
                 EPWM_forceSyncPulse(myEPWM0_BASE);      
 
@@ -470,13 +476,17 @@ void main(void)
             else if (extractDeads1(rxBuffer, &dead)) {
                 EPWM_setRisingEdgeDelayCount(myEPWM2_BASE, (uint16_t) dead);	
 
-                EPWM_setRisingEdgeDelayCount(myEPWM3_BASE, (uint16_t) dead);	
+                EPWM_setRisingEdgeDelayCount(myEPWM3_BASE, (uint16_t) dead);
+
+                EPWM_setRisingEdgeDelayCount(myEPWM4_BASE, (uint16_t) dead);	
             }
 
             else if (extractDeads2(rxBuffer, &dead)) {	
                 EPWM_setFallingEdgeDelayCount(myEPWM2_BASE, (uint16_t) dead);	
 
-                EPWM_setFallingEdgeDelayCount(myEPWM3_BASE, (uint16_t) dead);	
+                EPWM_setFallingEdgeDelayCount(myEPWM3_BASE, (uint16_t) dead);
+
+                EPWM_setFallingEdgeDelayCount(myEPWM4_BASE, (uint16_t) dead);	
             }
 
             else if (extractSync(rxBuffer, &sync_rect)) {
@@ -485,7 +495,8 @@ void main(void)
                 sync_delay = (uint16_t)(numerador / denominador) - 1;
 
                 EPWM_setPhaseShift(myEPWM2_BASE, sync_delay);
-                EPWM_setPhaseShift(myEPWM3_BASE, sync_delay);        
+                EPWM_setPhaseShift(myEPWM3_BASE, sync_delay); 
+                EPWM_setPhaseShift(myEPWM4_BASE, sync_delay);       
 
             
             }
